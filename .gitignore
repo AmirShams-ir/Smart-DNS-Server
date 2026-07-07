@@ -1,0 +1,40 @@
+# Logs
+logs/*
+*.log
+
+# Runtime
+*.pid
+*.sock
+
+# Temporary
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/
+
+# Build
+dist/
+build/
+
+# Shell
+*.out
+
+# Unbound generated files
+generated/
+
+# Local configs
+config/local.conf
