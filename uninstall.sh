@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+# ==============================================================================
+#
+# Smart DNS Server - Uninstall Script
+#
+# https://github.com/AmirShams-ir/Smart-DNS-Server
+#
+# Copyright (c) 2026 Amir Shams
+# Licensed under Apache-2.0
+#
+# ==============================================================================
+
+set -Eeuo pipefail
+IFS=$'\n\t'
+
+###############################################################################
+# Base Directory
+###############################################################################
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+###############################################################################
+# Common Library
+###############################################################################
+
+source "${BASE_DIR}/lib/common.sh"
+
+###############################################################################
+# Remove Service
+###############################################################################
+
+remove_services() {
+
+    info "Removing services..."
+
+    systemctl stop unbound 2>/dev/null || true
+
+    systemctl disable unbound 2>/dev/null || true
+
+}
+
+###############################################################################
+# Remove Packages
+###############################################################################
+
+remove_packages() {
+
+    info "Removing packages..."
+
+    apt remove -y unbound dnsutils
+
+    apt autoremove -y
+
+}
+
+###############################################################################
+# Remove Configuration
+###############################################################################
+
+remove_configuration() {
+
+    info "Removing configuration..."
+
+    rm -rf /etc/smartdns
+
+    rm -rf /var/log/smartdns
+
+}
+
+###############################################################################
+# Finish
+###############################################################################
+
+finish() {
+
+    success "Smart DNS Server removed successfully."
+
+}
+
+###############################################################################
+# Main
+###############################################################################
+
+main() {
+
+    banner
+
+    require_root
+
+    require_os
+
+    start_log
+
+    remove_services
+
+    remove_packages
+
+    remove_configuration
+
+    finish
+
+}
+
+main "$@"
