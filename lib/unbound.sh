@@ -16,7 +16,7 @@ set -euo pipefail
 # Files
 ###########################################################
 
-FORWARD_CONF="$UNBOUND_CONF/forward.conf"
+FORWARD_CONF="$/config/$/config/upstreams-global.conf"
 
 readonly TMP_FORWARD="$(mktemp -t smartdns-forward.XXXXXX)"
 
