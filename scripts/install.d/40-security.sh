@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-log_step "Applying security configuration"
+info "Applying security configuration"
 
 cat >/etc/unbound/unbound.conf.d/security.conf <<EOF
 server:
@@ -22,4 +22,4 @@ server:
 
 EOF
 
-log_ok "Security configured"
+success "Security configured"

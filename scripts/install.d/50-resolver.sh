@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-log_step "Creating Resolver configuration"
+info "Creating Resolver configuration"
 
 cat >/etc/unbound/unbound.conf.d/resolver.conf <<EOF
 server:
@@ -24,4 +24,4 @@ server:
 
 EOF
 
-log_ok "Resolver configured"
+success "Resolver configured"

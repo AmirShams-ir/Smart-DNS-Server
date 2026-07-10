@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-log_step "Creating Unbound directories"
+info "Creating Unbound directories"
 
 mkdir -p /etc/unbound/unbound.conf.d
 mkdir -p /var/lib/unbound
@@ -20,4 +20,4 @@ https://www.internic.net/domain/named.cache \
 unbound-anchor \
 -a /var/lib/unbound/root.key
 
-log_ok "Unbound initialized"
+success "Unbound initialized"

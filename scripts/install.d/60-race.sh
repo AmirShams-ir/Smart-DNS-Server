@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+info "Race upstream resolvers"
+
 source "$LIB_DIR/common.sh"
 source "$LIB_DIR/config.sh"
 source "$LIB_DIR/system.sh"
@@ -10,4 +12,4 @@ source "$LIB_DIR/unbound.sh"
 
 run_race
 
-log_ok "Best upstream resolvers selected"
+success "Best upstream resolvers selected"

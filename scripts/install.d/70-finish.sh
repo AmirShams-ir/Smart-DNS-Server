@@ -7,7 +7,7 @@ LIB_DIR="$PROJECT_ROOT/lib"
 
 source "$LIB_DIR/common.sh"
 
-log_step "Testing configuration"
+info "Testing configuration"
 
 unbound-checkconf
 
@@ -19,7 +19,7 @@ sleep 2
 
 systemctl --no-pager --full status unbound
 
-log_ok "Installation completed successfully"
+success "Installation completed successfully"
 
 echo
 echo "--------------------------------------------"

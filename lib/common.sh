@@ -25,8 +25,6 @@ LOG_DIR="/var/log/smartdns"
 
 LOG_FILE="${LOG_DIR}/install.log"
 
-CONFIG_DIR="/etc/smartdns"
-
 UNBOUND_DIR="/etc/unbound"
 
 SUPPORTED_OS=("debian" "ubuntu")
@@ -37,7 +35,9 @@ SUPPORTED_OS=("debian" "ubuntu")
 
 readonly BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-readonly CONFIG_DIR="${BASE_DIR}/config"
+readonly PROJECT_CONFIG_DIR="${BASE_DIR}/config"
+
+readonly SYSTEM_CONFIG_DIR="/etc/smartdns"
 
 readonly SCRIPT_DIR="${BASE_DIR}/scripts"
 

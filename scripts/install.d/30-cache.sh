@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-log_step "Configuring DNS Cache"
+info "Configuring DNS Cache"
 
 cat >/etc/unbound/unbound.conf.d/cache.conf <<EOF
 server:
@@ -21,4 +21,4 @@ server:
 
 EOF
 
-log_ok "Cache configured"
+success "Cache configured"
