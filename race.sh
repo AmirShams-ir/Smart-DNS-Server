@@ -2,14 +2,21 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$PROJECT_ROOT/lib"
+###############################################################################
+# Base Directory
+###############################################################################
 
-source "$LIB_DIR/common.sh"
-source "$LIB_DIR/config.sh"
-source "$LIB_DIR/system.sh"
-source "$LIB_DIR/race.sh"
-source "$LIB_DIR/unbound.sh"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+###############################################################################
+# Common Library
+###############################################################################
+
+source "${BASE_DIR}/lib/common.sh"
+source "${BASE_DIR}/lib/config.sh"
+source "${BASE_DIR}/lib/system.sh"
+source "${BASE_DIR}/lib/race.sh"
+source "${BASE_DIR}/lib/unbound.sh"
 
 run_race
 

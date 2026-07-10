@@ -12,7 +12,11 @@ systemctl restart unbound
 
 sleep 2
 
-systemctl --no-pager --full status unbound
+if systemctl is-active --quiet unbound; then
+    success "Unbound service is running."
+else
+    fatal "Unbound service failed to start."
+fi
 
 success "Installation completed successfully"
 

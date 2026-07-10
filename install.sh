@@ -24,11 +24,10 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ###############################################################################
 
 source "${BASE_DIR}/lib/common.sh"
-source "${BASE_DIR}/common.sh"
-source "${BASE_DIR}/config.sh"
-source "${BASE_DIR}/system.sh"
-source "${BASE_DIR}/race.sh"
-source "${BASE_DIR}/unbound.sh"
+source "${BASE_DIR}/lib/config.sh"
+source "${BASE_DIR}/lib/system.sh"
+source "${BASE_DIR}/lib/race.sh"
+source "${BASE_DIR}/lib/unbound.sh"
 
 ###############################################################################
 # Main

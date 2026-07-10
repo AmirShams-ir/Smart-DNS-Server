@@ -11,7 +11,7 @@ mkdir -p /var/log/unbound
 chown unbound:unbound /var/lib/unbound
 chown unbound:unbound /var/log/unbound
 
-log_step "Downloading Root Hints"
+info "Downloading Root Hints"
 
 curl -fsSL \
 https://www.internic.net/domain/named.cache \
