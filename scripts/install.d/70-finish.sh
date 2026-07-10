@@ -2,11 +2,6 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$PROJECT_ROOT/lib"
-
-source "$LIB_DIR/common.sh"
-
 info "Testing configuration"
 
 unbound-checkconf

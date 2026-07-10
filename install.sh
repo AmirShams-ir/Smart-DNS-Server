@@ -24,6 +24,11 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ###############################################################################
 
 source "${BASE_DIR}/lib/common.sh"
+source "${BASE_DIR}/common.sh"
+source "${BASE_DIR}/config.sh"
+source "${BASE_DIR}/system.sh"
+source "${BASE_DIR}/race.sh"
+source "${BASE_DIR}/unbound.sh"
 
 ###############################################################################
 # Main
@@ -49,11 +54,11 @@ main() {
         fatal "No installation modules found."
     fi
 
-    for script in "${scripts[@]}"; do
+    for script in "$INSTALL_DIR"/*.sh
+    do
 
         info "Executing $(basename "$script")"
 
-        # اجرای ماژول در همان Shell
         source "$script"
 
     done

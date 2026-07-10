@@ -12,7 +12,7 @@
 
 require_root(){
 
-    [[ $EUID -eq 0 ]] || die "Please run as root."
+    [[ $EUID -eq 0 ]] || fatal "Please run as root."
 
 }
 

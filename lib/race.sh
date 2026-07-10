@@ -44,28 +44,6 @@ cleanup() {
 trap cleanup EXIT
 
 ###########################################################
-# Logger
-###########################################################
-
-race_log() {
-
-    log_step "$1"
-
-}
-
-race_warn() {
-
-    log_warn "$1"
-
-}
-
-race_error() {
-
-    log_error "$1"
-
-}
-
-###########################################################
 # IPv4 Validation
 ###########################################################
 
@@ -342,7 +320,7 @@ calculate_score() {
 
 benchmark_all() {
 
-    race_log "Testing DNS servers..."
+    info "Testing DNS servers..."
 
     unique_servers |
 
