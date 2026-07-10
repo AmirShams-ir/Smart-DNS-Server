@@ -14,5 +14,4 @@ GLOBAL_UPSTREAMS="$CONFIG_DIR/upstreams-global.conf"
 LOCAL_UPSTREAMS="$CONFIG_DIR/upstreams-local.conf"
 
 BLOCKLIST_FILE="$CONFIG_DIR/blocklists.conf"
-
 DEFAULTS_FILE="$CONFIG_DIR/defaults.conf"
