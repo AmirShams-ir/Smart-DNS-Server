@@ -46,21 +46,20 @@ main() {
     local scripts=("${INSTALL_DIR}"/*.sh)
 
     if [[ ${#scripts[@]} -eq 0 ]]; then
-
         fatal "No installation modules found."
-
     fi
 
     for script in "${scripts[@]}"; do
 
-        run_script "$script"
+        info "Executing $(basename "$script")"
+
+        # اجرای ماژول در همان Shell
+        source "$script"
 
     done
 
     success ""
-
     success "Installation completed successfully."
-
     success ""
 
 }

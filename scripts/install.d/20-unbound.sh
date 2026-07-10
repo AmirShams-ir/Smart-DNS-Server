@@ -2,11 +2,6 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$PROJECT_ROOT/lib"
-
-source "$LIB_DIR/common.sh"
-
 log_step "Creating Unbound directories"
 
 mkdir -p /etc/unbound/unbound.conf.d

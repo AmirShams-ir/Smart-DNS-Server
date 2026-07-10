@@ -178,10 +178,8 @@ run_script() {
 
     [[ -f "$script" ]] || fatal "Missing $(basename "$script")"
 
-    chmod +x "$script"
-
     info "Executing $(basename "$script")"
 
-    bash "$script"
+    source "$script"
 
 }

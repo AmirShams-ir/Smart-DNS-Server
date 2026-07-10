@@ -2,9 +2,6 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$PROJECT_ROOT/lib"
-
 source "$LIB_DIR/common.sh"
 source "$LIB_DIR/config.sh"
 source "$LIB_DIR/system.sh"
