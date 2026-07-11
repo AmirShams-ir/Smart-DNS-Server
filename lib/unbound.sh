@@ -129,7 +129,7 @@ printf "\n"
 
 printf "Selected DNS Servers\n"
 
-printf '%s\n' "$separator"
+printf '%s\n' '----------------------------------------'
 
 best_servers |
 
@@ -160,9 +160,9 @@ run_race() {
 
     generate_forward
 
-    validate_forward
-
     install_forward
+
+    validate_forward
 
     reload_unbound_service
 

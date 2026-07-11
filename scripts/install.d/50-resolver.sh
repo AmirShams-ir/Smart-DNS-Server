@@ -20,8 +20,6 @@ server:
 
     root-hints: "/var/lib/unbound/root.hints"
 
-    auto-trust-anchor-file: "/var/lib/unbound/root.key"
-
 EOF
 
 success "Resolver configured"
