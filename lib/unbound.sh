@@ -16,7 +16,7 @@ set -euo pipefail
 # Files
 ###########################################################
 
-FORWARD_CONF="$/config/$/config/upstreams-global.conf"
+FORWARD_CONF="${PROJECT_CONFIG_DIR}/upstreams-global.conf"
 
 readonly TMP_FORWARD="$(mktemp -t smartdns-forward.XXXXXX)"
 
@@ -129,7 +129,7 @@ printf "\n"
 
 printf "Selected DNS Servers\n"
 
-printf "--------------------\n"
+printf '%s\n' "$separator"
 
 best_servers |
 

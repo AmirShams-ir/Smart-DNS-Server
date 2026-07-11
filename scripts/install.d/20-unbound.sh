@@ -19,10 +19,12 @@ https://www.internic.net/domain/named.cache \
 
 info "Generating DNSSEC root key..."
 
+rm -f /var/lib/unbound/root.key
+
 if unbound-anchor -a /var/lib/unbound/root.key; then
     success "DNSSEC root key generated."
 else
-    warning "unbound-anchor returned a non-zero exit code; checking output..."
+    warning "Unbound-Anchor not generated."
 fi
 
 success "Unbound initialized"
