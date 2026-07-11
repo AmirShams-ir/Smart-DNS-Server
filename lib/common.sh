@@ -35,8 +35,6 @@ SUPPORTED_OS=("debian" "ubuntu")
 
 readonly BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-readonly PROJECT_CONFIG_DIR="${BASE_DIR}/config"
-
 readonly SYSTEM_CONFIG_DIR="/etc/smartdns"
 
 readonly SCRIPT_DIR="${BASE_DIR}/scripts"
