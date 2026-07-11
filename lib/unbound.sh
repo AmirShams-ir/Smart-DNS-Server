@@ -67,7 +67,7 @@ append_forward() {
 
 generate_forward() {
 
-    race_log "Generating forward.conf"
+    info "Generating forward.conf"
 
     write_forward_header
 
@@ -88,7 +88,7 @@ generate_forward() {
 
 validate_forward() {
 
-    race_log "Validating Unbound configuration"
+    info "Validating Unbound configuration"
 
     unbound-checkconf
 
@@ -113,7 +113,7 @@ install_forward() {
 
 reload_unbound_service() {
 
-    race_log "Reloading Unbound"
+    info "Reloading Unbound"
 
     systemctl reload unbound
 
@@ -168,6 +168,6 @@ run_race() {
 
     print_selected
 
-    race_log "Race completed successfully."
+    success "Race completed successfully."
 
 }

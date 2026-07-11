@@ -10,8 +10,10 @@
 #
 # ==============================================================================
 
-GLOBAL_UPSTREAMS="$/config/upstreams-global.conf"
-LOCAL_UPSTREAMS="$/config/upstreams-local.conf"
+PROJECT_CONFIG_DIR="${BASE_DIR}/config"
 
-BLOCKLIST_FILE="$/config/blocklists.conf"
-DEFAULTS_FILE="$/config/defaults.conf"
+GLOBAL_UPSTREAMS="${PROJECT_CONFIG_DIR}/upstreams-global.conf"
+LOCAL_UPSTREAMS="${PROJECT_CONFIG_DIR}/upstreams-local.conf"
+
+BLOCKLIST_FILE="${PROJECT_CONFIG_DIR}/blocklists.conf"
+DEFAULTS_FILE="${PROJECT_CONFIG_DIR}/defaults.conf"
