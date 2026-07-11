@@ -14,17 +14,13 @@ chown unbound:unbound /var/log/unbound
 info "Downloading Root Hints"
 
 curl -fsSL \
-https://www.internic.net/domain/named.cache \
--o /var/lib/unbound/root.hints
+    https://www.internic.net/domain/named.cache \
+    -o /var/lib/unbound/root.hints
 
-info "Generating DNSSEC root key..."
+info "Generating DNSSEC root key"
 
 rm -f /var/lib/unbound/root.key
 
-if unbound-anchor -a /var/lib/unbound/root.key; then
-    success "DNSSEC root key generated."
-else
-    warning "Unbound-Anchor not generated."
-fi
+unbound-anchor -a /var/lib/unbound/root.key
 
 success "Unbound initialized"
