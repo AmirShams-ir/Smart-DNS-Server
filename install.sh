@@ -29,6 +29,8 @@ source "${BASE_DIR}/lib/system.sh"
 source "${BASE_DIR}/lib/race.sh"
 source "${BASE_DIR}/lib/unbound.sh"
 
+trap -p
+
 ###############################################################################
 # Main
 ###############################################################################
@@ -53,12 +55,15 @@ main() {
         fatal "No installation modules found."
     fi
 
-    for script in "$INSTALL_DIR"/*.sh
-    do
+    for script in "$INSTALL_DIR"/*.sh; do
 
         info "Executing $(basename "$script")"
 
-        source "$script"
+        if source "$script"; then
+            success "$(basename "$script") completed"
+        else
+            fatal "$(basename "$script") failed (exit code $?)"
+        fi
 
     done
 

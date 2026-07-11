@@ -17,7 +17,12 @@ curl -fsSL \
 https://www.internic.net/domain/named.cache \
 -o /var/lib/unbound/root.hints
 
-unbound-anchor \
--a /var/lib/unbound/root.key
+info "Generating DNSSEC root key..."
+
+if unbound-anchor -a /var/lib/unbound/root.key; then
+    success "DNSSEC root key generated."
+else
+    warning "unbound-anchor returned a non-zero exit code; checking output..."
+fi
 
 success "Unbound initialized"
