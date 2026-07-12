@@ -16,7 +16,7 @@ set -euo pipefail
 # Files
 ###########################################################
 
-FORWARD_CONF="${PROJECT_CONFIG_DIR}/forward.conf"
+readonly FORWARD_CONF="/etc/unbound/unbound.conf.d/forward.conf"
 
 readonly TMP_FORWARD="$(mktemp -t smartdns-forward.XXXXXX)"
 
@@ -25,8 +25,6 @@ cleanup_forward() {
     rm -f "$TMP_FORWARD"
 
 }
-
-trap cleanup_forward EXIT
 
 ###########################################################
 # Header
@@ -103,8 +101,7 @@ install_forward() {
     install \
         -m 644 \
         "$TMP_FORWARD" \
-        "$FORWARD_CONF" \
-        /etc/unbound/unbound.conf.d/forward.conf
+        "$FORWARD_CONF" 
 
 }
 
