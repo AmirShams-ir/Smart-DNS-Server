@@ -2,9 +2,22 @@
 
 set -euo pipefail
 
+info "Disabling systemd-resolved"
+
+if systemctl is-active --quiet systemd-resolved; then
+    systemctl stop --now systemd-resolved
+    systemctl disable --now systemd-resolved
+fi
+
+sleep 1
+
 info "Testing configuration"
 
 unbound-checkconf
+
+info "Starting Unbound"
+
+systemctl start unbound
 
 systemctl enable unbound
 
@@ -19,6 +32,14 @@ else
 fi
 
 success "Installation completed successfully"
+
+info "Testing DNS resolver"
+
+if dig +time=3 +tries=1 @127.0.0.1 google.com >/dev/null; then
+    success "DNS resolver is working."
+else
+    fatal "DNS resolver test failed."
+fi
 
 echo
 echo "--------------------------------------------"
