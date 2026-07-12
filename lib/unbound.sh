@@ -16,7 +16,7 @@ set -euo pipefail
 # Files
 ###########################################################
 
-FORWARD_CONF="${PROJECT_CONFIG_DIR}/upstreams-global.conf"
+FORWARD_CONF="${PROJECT_CONFIG_DIR}/forward.conf"
 
 readonly TMP_FORWARD="$(mktemp -t smartdns-forward.XXXXXX)"
 
@@ -103,7 +103,8 @@ install_forward() {
     install \
         -m 644 \
         "$TMP_FORWARD" \
-        "$FORWARD_CONF"
+        "$FORWARD_CONF" \
+        /etc/unbound/unbound.conf.d/forward.conf
 
 }
 
