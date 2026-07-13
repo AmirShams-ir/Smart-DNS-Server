@@ -25,10 +25,7 @@ unbound-checkconf
 
 info "Starting Unbound"
 
-systemctl start unbound
-
 systemctl enable unbound
-
 systemctl restart unbound
 
 sleep 2
