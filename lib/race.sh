@@ -230,11 +230,11 @@ benchmark_server() {
 
         if [[ -z "$QUERY_TIME" ]]
         then
-            ((FAIL++))
+            ((++FAIL))
             continue
         fi
 
-        ((SUCCESS++))
+        ((++SUCCESS))
 
         SUM=$((SUM + QUERY_TIME))
 
