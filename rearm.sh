@@ -22,23 +22,9 @@ source "${BASE_DIR}/lib/unbound.sh"
 # Main
 ###############################################################################
 
-print_header
-
-info "Benchmarking upstream DNS servers..."
-
-benchmark_all
-
 info "Generating new Unbound configuration..."
 
-generate_forward
-
-install_forward
-
-validate_forward
-
-reload_unbound_service
-
-print_selected
+run_race
 
 ###############################################################################
 # Test DNS Resolver
