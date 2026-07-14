@@ -296,9 +296,7 @@ calculate_score() {
     local JITTER="$7"
 
     #######################################################
-    # Score
-    #
-    # Lower is Better
+    # Score Point (Lower is Better)
     #######################################################
 
     local SCORE=0

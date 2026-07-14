@@ -47,6 +47,8 @@ main() {
 
     info "Running installer..."
 
+    chmod +x ${BASE_DIR}/install.sh
+
     bash "${BASE_DIR}/install.sh"
 
 }
