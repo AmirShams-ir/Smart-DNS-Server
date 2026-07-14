@@ -46,14 +46,49 @@ else
     fatal "DNS resolver test failed."
 fi
 
-echo
-echo "--------------------------------------------"
-echo " Smart DNS Server Installed Successfully"
-echo "--------------------------------------------"
-echo
-echo "DNS Port : 53"
-echo "Recursive : Enabled"
-echo "DNSSEC    : Enabled"
-echo "Cache     : Enabled"
-echo "Ready."
-echo
+DEFAULT_IFACE=$(ip route | awk '/default/ {print $5; exit}')
+
+DNS_IPV4=$(
+    ip -4 addr show "$DEFAULT_IFACE" \
+    | awk '/inet /{print $2}' \
+    | cut -d/ -f1
+)
+
+DNS_IPV6=$(
+    ip -6 addr show dev "$DEFAULT_IFACE" \
+    | awk '
+        /scope global/ &&
+        !/temporary/ &&
+        !/deprecated/ &&
+        !/tentative/
+        {
+            split($2,a,"/");
+            print a[1];
+            exit
+        }
+    '
+)
+
+cat <<EOF
+
+==================================
+ Smart DNS Server is Ready
+==================================
+
+DNS Port : 53
+Recursive : Enabled
+DNSSEC    : Enabled
+Cache     : Enabled
+
+IPv4 DNS:
+${DNS_IPV4}
+
+IPv6 DNS:
+${DNS_IPV6}
+
+Now configure your router:
+
+  IPv4 DNS : ${DNS_IPV4}
+  IPv6 DNS : ${DNS_IPV6}
+
+EOF

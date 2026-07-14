@@ -35,6 +35,8 @@ server:
     access-control: ::1 allow
     access-control: ${LAN_NETWORK} allow
 
+    qname-minimisation: yes
+
     root-hints: "/var/lib/unbound/root.hints"
 
     verbosity: 1
