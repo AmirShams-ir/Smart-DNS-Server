@@ -55,14 +55,12 @@ DNS_IPV4=$(
 )
 
 DNS_IPV6=$(
-    ip -6 addr show dev "$DEFAULT_IFACE" \
-    | awk '
-        /scope global/ &&
+    ip -6 -o addr show dev "$DEFAULT_IFACE" scope global |
+    awk '
         !/temporary/ &&
         !/deprecated/ &&
-        !/tentative/
-        {
-            split($2,a,"/");
+        !/tentative/ {
+            split($4,a,"/");
             print a[1];
             exit
         }
