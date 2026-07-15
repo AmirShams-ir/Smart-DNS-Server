@@ -103,15 +103,15 @@ query_time() {
 
     local server="$1"
 
-    dig @"$server" \
-        "$DNS_TEST_DOMAIN" \
-        "$DNS_QUERY_TYPE" \
-        +tries="$DNS_RETRIES" \
-        +time="$DNS_TIMEOUT" \
-        +stats \
-        2>/dev/null |
-        awk '/Query time:/ {print $4}'
-
+    {
+        dig @"$server" \
+            "$DNS_TEST_DOMAIN" \
+            "$DNS_QUERY_TYPE" \
+            +tries="$DNS_RETRIES" \
+            +time="$DNS_TIMEOUT" \
+            +stats \
+            2>/dev/null || true
+    } | awk '/Query time:/ {print $4}'
 }
 
 ###########################################################
