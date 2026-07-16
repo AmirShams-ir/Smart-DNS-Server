@@ -22,6 +22,31 @@ LOCAL_UPSTREAMS="${PROJECT_CONFIG_DIR}/upstreams-local.conf"
 BLOCKLIST_FILE="${PROJECT_CONFIG_DIR}/blocklists.conf"
 DEFAULTS_FILE="${PROJECT_CONFIG_DIR}/defaults.conf"
 
+
+###########################################################
+# Block Mode
+###########################################################
+
+block_mode() {
+
+    local value
+
+    value=$(
+        grep -E "^BLOCK_MODE=" "$DEFAULTS_FILE" |
+        cut -d= -f2 |
+        tr '[:upper:]' '[:lower:]'
+    )
+
+    case "$value" in
+        nxdomain|refuse|redirect|static)
+            echo "$value"
+            ;;
+        *)
+            echo "nxdomain"
+            ;;
+    esac
+}
+
 ###########################################################
 # Blocklist Reader
 ###########################################################

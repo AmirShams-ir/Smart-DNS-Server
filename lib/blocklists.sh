@@ -20,7 +20,7 @@ readonly TMP_BLOCK="$(mktemp -t smartdns-block.XXXXXX)"
 
 cleanup_forward() {
 
-    rm -f "$TMP_FORWARD"
+    rm -f "$TMP_BLOCK"
 
 }
 
@@ -57,9 +57,22 @@ append_domain() {
 
     [[ "$DOMAIN" =~ ^# ]] && return
 
-    cat >> "$TMP_BLOCK" <<EOF
-    local-zone: "$DOMAIN." always_nxdomain
+    if [[ "$BLOCK_ACTION" == "redirect" ]]
+    then
+
+        cat >> "$TMP_BLOCK" <<EOF
+    local-zone: "$DOMAIN." redirect
+    local-data: "$DOMAIN. A 0.0.0.0"
+    local-data: "$DOMAIN. AAAA ::"
 EOF
+
+    else
+
+        cat >> "$TMP_BLOCK" <<EOF
+    local-zone: "$DOMAIN." $BLOCK_ACTION
+EOF
+
+    fi
 
 }
 
@@ -88,6 +101,33 @@ process_blocklist() {
 # Generate Blocklists
 ###########################################################
 
+readonly BLOCK_MODE="$(block_mode)"
+
+case "$BLOCK_MODE" in
+
+    nxdomain)
+        BLOCK_ACTION="always_nxdomain"
+        ;;
+
+    refuse)
+        BLOCK_ACTION="refuse"
+        ;;
+
+    static)
+        BLOCK_ACTION="static"
+        ;;
+
+    redirect)
+        BLOCK_ACTION="redirect"
+        ;;
+
+    *)
+        error "Unknown BLOCK_MODE: $BLOCK_MODE"
+        return 1
+        ;;
+
+esac
+
 generate_blocklists() {
 
     info "Generating Blocklists"
@@ -99,6 +139,7 @@ generate_blocklists() {
 
         [[ -d "$DIR" ]] || continue
 
+        local CATEGORY FILE
         CATEGORY=$(basename "$DIR")
 
         if blocklist_enabled "$CATEGORY"
