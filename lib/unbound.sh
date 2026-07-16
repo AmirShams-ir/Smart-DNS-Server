@@ -158,7 +158,11 @@ run_race() {
 
     generate_forward
 
+    generate_blocklists
+
     install_forward
+
+    install_blocklists
 
     validate_forward
 

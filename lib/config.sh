@@ -10,6 +10,10 @@
 #
 # ==============================================================================
 
+###########################################################
+# Files Path
+###########################################################
+
 PROJECT_CONFIG_DIR="${BASE_DIR}/config"
 
 GLOBAL_UPSTREAMS="${PROJECT_CONFIG_DIR}/upstreams-global.conf"
@@ -17,3 +21,22 @@ LOCAL_UPSTREAMS="${PROJECT_CONFIG_DIR}/upstreams-local.conf"
 
 BLOCKLIST_FILE="${PROJECT_CONFIG_DIR}/blocklists.conf"
 DEFAULTS_FILE="${PROJECT_CONFIG_DIR}/defaults.conf"
+
+###########################################################
+# Blocklist Reader
+###########################################################
+
+blocklist_enabled() {
+
+    local category="$1"
+
+    local value
+
+    value=$(
+        grep -E "^${category}=" "$BLOCKLIST_FILE" |
+        cut -d= -f2 |
+        tr '[:upper:]' '[:lower:]'
+    )
+
+    [[ "$value" == "enabled" ]]
+}

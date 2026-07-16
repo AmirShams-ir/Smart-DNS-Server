@@ -10,6 +10,10 @@
 #
 # ==============================================================================
 
+###########################################################
+# DNS Tester
+###########################################################
+
 query_dns(){
 
     local SERVER="$1"
@@ -47,4 +51,27 @@ dns_alive(){
         +short \
         >/dev/null
 
+}
+
+###########################################################
+# Process Blocklist Category
+###########################################################
+
+process_category() {
+
+    local category="$1"
+
+    local dir="$BASE_DIR/blocklists/$category"
+
+    [[ -d "$dir" ]] || return
+
+    find "$dir" -type f -name "*.txt" | sort |
+
+    while IFS= read -r file; do
+
+        dns_log "Loading $(basename "$file")"
+
+        process_blocklist "$file"
+
+    done
 }
