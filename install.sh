@@ -23,6 +23,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Common Library
 ###############################################################################
 
+source "${BASE_DIR}/lib/blocklists.sh"
 source "${BASE_DIR}/lib/common.sh"
 source "${BASE_DIR}/lib/config.sh"
 source "${BASE_DIR}/lib/dns.sh"
