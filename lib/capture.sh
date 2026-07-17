@@ -101,8 +101,7 @@ start_capture() {
 
     local CLIENT="$1"
     local domain
-
-    declare -A LAST
+    local last=""
 
     tshark \
         -l \
@@ -112,16 +111,14 @@ start_capture() {
         -f "host $CLIENT and port 53" \
         -Y "dns.flags.response == 0" \
         -T fields \
-        -e dns.qry.name \
-    |
+        -e dns.qry.name |
     while IFS= read -r domain
     do
         [[ -z "$domain" ]] && continue
 
-        [[ "${LAST[$domain]}" == "1" ]] && continue
+        [[ "$domain" == "$last" ]] && continue
 
-        LAST=()
-        LAST["$domain"]=1
+        last="$domain"
 
         printf '%(%H:%M:%S)T   %s\n' -1 "$domain"
     done
