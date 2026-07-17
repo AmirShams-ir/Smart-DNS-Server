@@ -12,6 +12,8 @@ apt-get install -y \
     dnsutils \
     curl \
     wget \
+    tcpdump \
+    tshark \
     ca-certificates
 
 success "Packages installed"
