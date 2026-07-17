@@ -101,34 +101,34 @@ process_blocklist() {
 # Generate Blocklists
 ###########################################################
 
-readonly BLOCK_MODE="$(block_mode)"
-
-case "$BLOCK_MODE" in
-
-    nxdomain)
-        BLOCK_ACTION="always_nxdomain"
-        ;;
-
-    refuse)
-        BLOCK_ACTION="refuse"
-        ;;
-
-    static)
-        BLOCK_ACTION="static"
-        ;;
-
-    redirect)
-        BLOCK_ACTION="redirect"
-        ;;
-
-    *)
-        error "Unknown BLOCK_MODE: $BLOCK_MODE"
-        return 1
-        ;;
-
-esac
-
 generate_blocklists() {
+
+        readonly BLOCK_MODE="$(block_mode)"
+
+    case "$BLOCK_MODE" in
+
+        nxdomain)
+            BLOCK_ACTION="always_nxdomain"
+            ;;
+
+        refuse)
+            BLOCK_ACTION="refuse"
+            ;;
+
+        static)
+            BLOCK_ACTION="static"
+            ;;
+
+        redirect)
+            BLOCK_ACTION="redirect"
+            ;;
+
+        *)
+            error "Unknown BLOCK_MODE: $BLOCK_MODE"
+            return 1
+            ;;
+
+    esac
 
     info "Generating Blocklists"
 
