@@ -110,11 +110,11 @@ start_capture() {
         -p \
         -i any \
         -f "host $CLIENT and port 53" \
+        -Y "dns.flags.response == 0" \
         -T fields \
-        -e dns.flags.response \
         -e dns.qry.name \
         -e dns.a \
-        -e dns.aaaa
+        -e dns.aaaa |
     while IFS= read -r domain
     do
         [[ -z "$domain" ]] && continue
