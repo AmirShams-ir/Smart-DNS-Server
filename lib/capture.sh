@@ -103,17 +103,19 @@ start_capture() {
     local domain
     local last=""
 
-    tshark \
-        -l \
-        -n \
-        -p \
-        -i any \
-        -f "host $CLIENT and port 53" \
-        -Y "dns.flags.response == 0" \
-        -T fields \
-        -e dns.qry.name \
-        -e dns.a \
-        -e dns.aaaa |
+tshark \
+    -q \
+    -l \
+    -n \
+    -p \
+    -i any \
+    -f "host $CLIENT and port 53" \
+    -Y "dns.flags.response == 1" \
+    -T fields \
+    -E separator=$'\t' \
+    -e dns.qry.name \
+    -e dns.a \
+    -e dns.aaaa |
     while IFS= read -r domain
     do
         [[ -z "$domain" ]] && continue
