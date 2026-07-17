@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 #
-# Smart DNS Server - Update Script
+# Smart DNS Server - Panel Script
 #
 # https://github.com/AmirShams-ir/Smart-DNS-Server
 #
@@ -45,27 +45,17 @@ trap -p
 # Main
 ###############################################################################
 
-main() {
+info "Smart DNS Panel"
 
-    banner
+set -Eeuo pipefail
+
+main() {
 
     require_root
 
-    require_os
+    check_dependencies
 
-    start_log
-
-    info "Updating Smart DNS Server..."
-
-    git pull --ff-only
-
-    success "Project updated successfully."
-
-    info "Running installer..."
-
-    chmod +x ${BASE_DIR}/install.sh
-
-    bash "${BASE_DIR}/install.sh"
+    main_menu
 
 }
 

@@ -23,7 +23,23 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Common Library
 ###############################################################################
 
+source "${BASE_DIR}/lib/blocklists.sh"
 source "${BASE_DIR}/lib/common.sh"
+source "${BASE_DIR}/lib/config.sh"
+source "${BASE_DIR}/lib/dns.sh"
+source "${BASE_DIR}/lib/race.sh"
+source "${BASE_DIR}/lib/system.sh"
+source "${BASE_DIR}/lib/unbound.sh"
+
+source "${BASE_DIR}/lib/ui.sh"
+source "${BASE_DIR}/lib/core.sh"
+source "${BASE_DIR}/lib/stats.sh"
+source "${BASE_DIR}/lib/capture.sh"
+source "${BASE_DIR}/lib/parser.sh"
+source "${BASE_DIR}/lib/block.sh"
+source "${BASE_DIR}/lib/upstream.sh"
+
+trap -p
 
 ###############################################################################
 # Remove Service
