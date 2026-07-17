@@ -31,6 +31,14 @@ source "${BASE_DIR}/lib/race.sh"
 source "${BASE_DIR}/lib/system.sh"
 source "${BASE_DIR}/lib/unbound.sh"
 
+source "${BASE_DIR}/lib/ui.sh"
+source "${BASE_DIR}/lib/core.sh"
+source "${BASE_DIR}/lib/stats.sh"
+source "${BASE_DIR}/lib/capture.sh"
+source "${BASE_DIR}/lib/parser.sh"
+source "${BASE_DIR}/lib/block.sh"
+source "${BASE_DIR}/lib/upstream.sh"
+
 trap -p
 
 ###############################################################################
