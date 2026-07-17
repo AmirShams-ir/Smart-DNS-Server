@@ -104,7 +104,7 @@ start_capture() {
     local last=""
 
     tshark \
-        -q \
+        -Q \
         -l \
         -n \
         -p \
@@ -114,7 +114,8 @@ start_capture() {
         -T fields \
         -e dns.qry.name \
         -e dns.a \
-        -e dns.aaaa |
+        -e dns.aaaa \
+        -e dns.flags.response |
     while IFS= read -r domain
     do
         [[ -z "$domain" ]] && continue
