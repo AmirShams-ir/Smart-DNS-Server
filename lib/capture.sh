@@ -122,8 +122,11 @@ start_capture() {
 
         tshark \
             -l \
+            -n \
+            -p \
             -i any \
-            -Y "ip.addr==$CLIENT && dns"
+            -f "port 53" \
+        | parse_dns
 
     fi
 
