@@ -53,8 +53,6 @@ main() {
 
     require_root
 
-    check_dependencies
-
     main_menu
 
 }
