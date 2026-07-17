@@ -100,6 +100,9 @@ choose_client() {
 start_capture() {
 
     local CLIENT="$1"
+    local domain
+
+    declare -A LAST
 
     tshark \
         -l \
@@ -107,44 +110,20 @@ start_capture() {
         -p \
         -i any \
         -f "host $CLIENT and port 53" \
-    | awk '
+        -Y "dns.flags.response == 0" \
+        -T fields \
+        -e dns.qry.name \
+    |
+    while IFS= read -r domain
+    do
+        [[ -z "$domain" ]] && continue
 
-    /Standard query/ && $0 !~ /response/ {
+        [[ "${LAST[$domain]}" == "1" ]] && continue
 
-        domain=""
+        LAST=()
+        LAST["$domain"]=1
 
-        for(i=1;i<=NF;i++){
-
-            if($i=="A" ||
-               $i=="AAAA" ||
-               $i=="HTTPS" ||
-               $i=="SVCB" ||
-               $i=="CNAME"){
-
-                domain=$(i+1)
-                break
-
-            }
-
-        }
-
-        if(domain=="")
-            next
-
-        sub(/\.$/, "", domain)
-        sub(/\.Home$/, "", domain)
-
-        if(last==domain)
-            next
-
-        last=domain
-
-        printf "%s   %s\n",
-            strftime("%H:%M:%S"),
-            domain
-
-        fflush()
-
-    }'
+        printf '%(%H:%M:%S)T   %s\n' -1 "$domain"
+    done
 
 }
