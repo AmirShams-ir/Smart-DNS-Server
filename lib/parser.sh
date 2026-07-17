@@ -12,35 +12,6 @@ live_dns_monitor() {
 
 }
 
-###########################################################
-# Detect Capture Engine
-###########################################################
-
-detect_capture_engine() {
-
-    if command -v tshark >/dev/null 2>&1; then
-        CAPTURE_ENGINE="tshark"
-        return
-    fi
-
-    if command -v tcpdump >/dev/null 2>&1; then
-        CAPTURE_ENGINE="tcpdump"
-        return
-    fi
-
-    echo
-    echo "No packet capture program found."
-    echo
-    echo "Install one of:"
-    echo
-    echo "apt install tshark"
-    echo "or"
-    echo "apt install tcpdump"
-    echo
-
-    exit 1
-
-}
 
 ###########################################################
 # Detect Active Clients
@@ -100,21 +71,45 @@ start_capture() {
     echo "Press Ctrl+C to stop."
     echo
 
-    if [[ "$CAPTURE_ENGINE" == "tcpdump" ]]; then
+    awk '
 
-        tcpdump \
-            -l \
-            -nn \
-            -i any \
-            "host $CLIENT and port 53"
+    BEGIN {
 
-    else
+        OFS="\t"
 
-        tshark \
-            -l \
-            -Y "ip.addr==$CLIENT && dns" \
-            -i any
+    }
 
-    fi
+    /Standard query/ && $0 !~ /response/ {
+
+        domain=""
+
+        for(i=1;i<=NF;i++){
+
+            if($i=="A" || $i=="AAAA" || $i=="HTTPS" || $i=="SVCB" || $i=="CNAME"){
+
+                domain=$(i+1)
+                break
+
+            }
+
+        }
+
+        if(domain=="")
+            next
+
+        sub(/\.Home$/,"",domain)
+
+        if(seen[domain]++)
+            next
+
+        printf "%s   %s\n",
+            strftime("%H:%M:%S"),
+            domain
+
+        fflush()
+
+    }
+
+    '
 
 }
