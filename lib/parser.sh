@@ -19,8 +19,6 @@ live_dns_monitor() {
 
 choose_client() {
 
-    detect_capture_engine
-
     echo
     echo "Searching active clients..."
     echo
