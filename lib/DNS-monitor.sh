@@ -94,7 +94,7 @@ choose_client() {
                 ;;
 
             *)
-                return 0
+                monitor_menu
                 ;;
 
         esac
