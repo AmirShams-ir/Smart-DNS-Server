@@ -18,7 +18,7 @@ CLIENT_IP=""
 # Live DNS Monitor
 ###########################################################
 
-live_dns_monitor() {
+monitor_menu() {
 
     choose_client || return
 

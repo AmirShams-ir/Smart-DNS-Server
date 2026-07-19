@@ -35,18 +35,6 @@ pause() {
 }
 
 ###########################################################
-# Not Implemented
-###########################################################
-
-coming_soon() {
-
-    echo
-    echo "Coming Soon..."
-    pause
-
-}
-
-###########################################################
 # Main Menu
 ###########################################################
 
@@ -76,7 +64,7 @@ EOF
         case "$OPTION" in
 
             1)
-                live_dns_monitor
+                monitor_menu
                 ;;
 
             2)
@@ -101,93 +89,15 @@ EOF
                 ;;
 
             *)
+
                 echo
-                echo "Invalid option."
-                sleep 1
-                ;;
+                echo "Invalid selection."
+                read -rp "Press Enter..."
+
+            ;;
 
         esac
 
     done
-
-}
-
-###########################################################
-# Menus
-###########################################################
-
-block_menu() {
-
-    show_banner
-
-    echo "Block Manager"
-    echo
-
-    coming_soon
-
-}
-
-config_menu() {
-
-    while true; do
-
-        show_banner
-
-        cat <<EOF
-Configuration
-
-1) DNS Settings
-
-2) Cache Settings
-
-3) IPv6
-
-4) DNSSEC
-
-5) Logging
-
-6) Upstream Settings
-
-0) Back
-
-EOF
-
-        read -rp "Select: " OPTION
-
-        case "$OPTION" in
-
-            0)
-                return
-                ;;
-
-            *)
-                coming_soon
-                ;;
-
-        esac
-
-    done
-
-}
-
-rearm_menu() {
-
-    show_banner
-
-    echo "Rearm DNS"
-    echo
-
-    coming_soon
-
-}
-
-stats_menu() {
-
-    show_banner
-
-    echo "Statistics"
-    echo
-
-    coming_soon
 
 }
