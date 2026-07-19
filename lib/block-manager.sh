@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BLOCK_DIR="$BASE_DIR/config/blocklists"
+BLOCK_DIR="$BASE_DIR/blocklists"
 
 block_menu() {
 
