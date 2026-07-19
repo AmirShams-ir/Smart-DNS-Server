@@ -34,9 +34,11 @@ source "${BASE_DIR}/lib/unbound.sh"
 source "${BASE_DIR}/lib/ui.sh"
 source "${BASE_DIR}/lib/core.sh"
 source "${BASE_DIR}/lib/stats.sh"
-source "${BASE_DIR}/lib/capture.sh"
 source "${BASE_DIR}/lib/block.sh"
 source "${BASE_DIR}/lib/upstream.sh"
+source "${BASE_DIR}/lib/DNS-monitor.sh"
+source "${BASE_DIR}/lib/block-manager.sh"
+source "${BASE_DIR}/lib/config-manager.sh"
 
 trap -p
 
