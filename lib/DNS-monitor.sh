@@ -19,7 +19,7 @@ CLIENT_IP=""
 
 monitor_menu() {
 
-    choose_client || return
+    choose_client || return 0
 
     clear
 

@@ -64,7 +64,7 @@ EOF
         case "$OPTION" in
 
             1)
-                monitor_menu
+                monitor_menu || :
                 ;;
 
             2)
