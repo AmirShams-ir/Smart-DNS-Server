@@ -146,7 +146,7 @@ menu_edit_file() {
 
             4)
 
-                "$BASE_DIR/rearm.sh"   
+                "bash $BASE_DIR/rearm.sh"   
 
                 ;;
 

@@ -69,25 +69,35 @@ choose_client() {
     echo
 
     mapfile -t CLIENTS < <(
-
         ip neigh \
         | awk '$1 ~ /^[0-9]/ {print $1}' \
         | sort -u
-
     )
 
     [[ ${#CLIENTS[@]} -eq 0 ]] && {
-
         echo "No active clients found."
         return 1
-
     }
 
     PS3="Select Client: "
 
-    select CLIENT_IP in "${CLIENTS[@]}"; do
+    select CLIENT_IP in "${CLIENTS[@]}" "Back"; do
 
-        [[ -n "$CLIENT_IP" ]] && break
+        case "$CLIENT_IP" in
+
+            Back)
+                return 1
+                ;;
+
+            "")
+                echo "Invalid selection."
+                ;;
+
+            *)
+                return 0
+                ;;
+
+        esac
 
     done
 
