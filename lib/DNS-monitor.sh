@@ -10,7 +10,6 @@
 #
 # ==============================================================================
 
-
 CAPTURE_ENGINE=""
 CLIENT_IP=""
 
@@ -74,10 +73,11 @@ choose_client() {
         | sort -u
     )
 
-    [[ ${#CLIENTS[@]} -eq 0 ]] && {
+    if ((${#CLIENTS[@]} == 0)); then
         echo "No active clients found."
+        read -rp "Press Enter..."
         return 1
-    }
+    fi
 
     PS3="Select Client: "
 
@@ -94,7 +94,7 @@ choose_client() {
                 ;;
 
             *)
-                monitor_menu
+                return 0
                 ;;
 
         esac
@@ -113,23 +113,22 @@ start_capture() {
     local domain
     local last=""
 
-tshark \
-    -q \
-    -l \
-    -n \
-    -p \
-    -i any \
-    -f "host $CLIENT and port 53" \
-    -Y "dns.flags.response == 1" \
-    -T fields \
-    -E separator=$'\t' \
-    -e dns.qry.name \
-    -e dns.a \
-    -e dns.aaaa |
+    tshark \
+        -q \
+        -l \
+        -n \
+        -p \
+        -i any \
+        -f "host $CLIENT and port 53" \
+        -Y "dns.flags.response == 1" \
+        -T fields \
+        -E separator=$'\t' \
+        -e dns.qry.name \
+        -e dns.a \
+        -e dns.aaaa |
     while IFS= read -r domain
     do
         [[ -z "$domain" ]] && continue
-
         [[ "$domain" == "$last" ]] && continue
 
         last="$domain"
