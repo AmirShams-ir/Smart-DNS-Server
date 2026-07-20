@@ -65,6 +65,9 @@ menu_block_files() {
         done
 
         echo
+        echo " A) Add File"
+        echo " D) Delete File"
+        echo
         echo " 0) Back"
         echo
 
@@ -105,67 +108,84 @@ menu_edit_file() {
 
         read -rp "Select: " choice
 
-        case "$choice" in
+    case "${choice^^}" in
 
-            1)
+    0)
+        return
+        ;;
 
-                command -v nano >/dev/null || {
-                echo
-                echo "nano is not installed."
-                read -rp "Press Enter..."
-                continue
-                } 
+    A)
 
-                nano "$file"
+        read -rp "File name: " filename
 
-                ;;
+        [[ -z "$filename" ]] && continue
 
-            2)
+        filename="${filename%.txt}.txt"
 
-                command -v vim >/dev/null || {
-                echo
-                echo "vim is not installed."
-                read -rp "Press Enter..."
-                continue
-                }  
+        if [[ -e "$category/$filename" ]]; then
 
-                vim "$file"
+            echo
+            echo "File already exists."
+            read -rp "Press Enter..."
+            continue
 
-                ;;
+        fi
 
-            3)
+        touch "$category/$filename"
 
-                clear
+        nano "$category/$filename"
 
-                cat "$file"
+        ;;
 
-                echo
-                read -rp "Press Enter..."
+    D)
 
-                ;;
+        read -rp "Delete file: " filename
 
-            4)
+        filename="${filename%.txt}.txt"
 
-                "bash $BASE_DIR/rearm.sh"   
+        if [[ ! -f "$category/$filename" ]]; then
 
-                ;;
+            echo
+            echo "File not found."
+            read -rp "Press Enter..."
+            continue
 
-            0)
+        fi
 
-                return
+        echo
+        read -rp "Delete '$filename' ? [y/N] " ans
 
-                ;;
+        [[ "$ans" =~ ^[Yy]$ ]] || continue
 
-            *)
+        rm -f "$category/$filename"
 
-                echo
-                echo "Invalid selection."
-                read -rp "Press Enter..."
+        echo
+        echo "Deleted."
 
-            ;;
+        read -rp "Press Enter..."
 
-        esac
+        ;;
 
-    done
+    *)
+
+        if [[ "$choice" =~ ^[0-9]+$ ]] &&
+           (( choice>=1 && choice<=${#files[@]} ))
+        then
+
+            menu_edit_file "${files[$((choice-1))]}"
+
+        else
+
+            echo
+            echo "Invalid selection."
+            read -rp "Press Enter..."
+
+        fi
+
+        ;;
+
+    esac
+
+done
 
 }
