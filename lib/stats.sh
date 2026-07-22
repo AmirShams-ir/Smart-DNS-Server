@@ -41,8 +41,14 @@ print_dns_status() {
 
     TIMER_INTERVAL=$(config_get AUTO_REARM_INTERVAL)
 
-    printf "%-20s %s\n" "DNS Service" "$DNS_STATUS"
-    printf "%-20s %s\n" "Auto Rearm" "$TIMER_STATUS"
+    printf "%-20s %s\n" \
+        "DNS Service" \
+        "$(status_text "$DNS_STATUS")"
+
+    printf "%-20s %s\n" \
+        "Auto Rearm" \
+        "$(status_text "$TIMER_STATUS")"
+        
     printf "%-20s %s\n" "Interval" "$TIMER_INTERVAL"
 
 }
@@ -57,13 +63,17 @@ print_cache_stats() {
     local QUERIES
     local HITS
 
-    QUERIES=$(unbound-control stats_noreset 2>/dev/null |
-        awk -F= '/total.num.queries/ {print $2}')
+    QUERIES=$(
+        unbound-control stats_noreset |
+        grep '^total.num.queries=' |
+        cut -d= -f2
+    )
 
-    HITS=$(unbound-control stats_noreset 2>/dev/null |
-        awk -F= '/total.num.cachehits/ {print $2}')
-
-    [[ -z "$QUERIES" ]] && return
+    HITS=$(
+        unbound-control stats_noreset |
+        grep '^total.num.cachehits=' |
+        cut -d= -f2
+    )
 
     printf "%-20s %s\n" "Queries" "$QUERIES"
     printf "%-20s %s\n" "Cache Hits" "$HITS"
@@ -131,6 +141,19 @@ print_system_stats() {
     printf "%-20s %s\n" "Disk" "$DISK"
     printf "%-20s %s\n" "Load" "$LOAD"
     printf "%-20s %s\n" "Uptime" "$UPTIME"
+
+}
+
+status_text() {
+
+    case "$1" in
+        active)    echo "Running" ;;
+        inactive)  echo "Stopped" ;;
+        enabled)   echo "Enabled" ;;
+        disabled)  echo "Disabled" ;;
+        failed)    echo "Failed" ;;
+        *)         echo "$1" ;;
+    esac
 
 }
 
