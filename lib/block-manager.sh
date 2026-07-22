@@ -296,8 +296,16 @@ menu_edit_file() {
             3)
 
                 clear
-                
-                view_file
+
+                echo "=================================================="
+                echo "File : $(basename "$file")"
+                echo "=================================================="
+                echo
+
+                cat "$file"
+
+                echo
+                pause
 
                 ;;
 
@@ -358,24 +366,6 @@ menu_edit_file() {
         esac
 
     done
-
-}
-
-view_file() {
-
-    local file="$1"
-
-    clear
-
-    echo "=================================================="
-    echo "File : $(basename "$file")"
-    echo "=================================================="
-    echo
-
-    nl -ba "$file"
-
-    echo
-    pause
 
 }
 
