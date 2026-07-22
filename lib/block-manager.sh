@@ -31,9 +31,9 @@ block_menu() {
 
         for i in "${!categories[@]}"
         do
-            printf "%2d) %s\n" \
-                "$((i+1))" \
-                "$(basename "${categories[$i]}")"
+            printf "%d) %s\n" \
+            "$((i+1))" \
+            "$(basename "${files[$i]}")"
         done
 
         echo
