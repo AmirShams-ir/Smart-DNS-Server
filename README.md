@@ -8,7 +8,7 @@
 ![Linux](https://img.shields.io/badge/Linux-Debian%20%7C%20Armbian-blue?logo=linux)
 ![Bash](https://img.shields.io/badge/Bash-100%25-green?logo=gnubash)
 ![DNS](https://img.shields.io/badge/DNS-Unbound-orange)
-![License](https://img.shields.io/badge/License-MIT-red)
+![License](https://img.shields.io/badge/License-Apache-red)
 ![Version](https://img.shields.io/badge/version-1.0.0--beta1-blueviolet)
 
 Fast • Secure • Lightweight • Privacy First
@@ -267,7 +267,7 @@ Apache 2.0 License
 
 <div align="center">
 
-Made with ❤️ with ChatGPT using Bash & Unbound & Smart Race Engine.
+Made with ❤️ by Codex using Bash & Unbound & Smart Race Engine.
 
 ⭐ If you like this project, don't forget to Star it!
 
