@@ -1,53 +1,117 @@
-<div align="center">
+<p align="center">
+<img src="https://raw.githubusercontent.com/YOUR_USERNAME/Smart-DNS-Server/main/assets/banner.png" width="100%">
+</p>
 
-# 🚀 Smart DNS Server
+<h1 align="center">
+🚀 Smart DNS Server
+</h1>
 
-### ⚡ A Lightweight, Fast and Intelligent DNS Server
-### powered by **Unbound + Smart Race Engine**
+<p align="center">
 
-![Linux](https://img.shields.io/badge/Linux-Debian%20%7C%20Armbian-blue?logo=linux)
-![Bash](https://img.shields.io/badge/Bash-100%25-green?logo=gnubash)
-![DNS](https://img.shields.io/badge/DNS-Unbound-orange)
-![License](https://img.shields.io/badge/License-MIT-red)
-![Version](https://img.shields.io/badge/version-1.0.0--beta1-blueviolet)
+A Lightweight • Intelligent • Privacy-First DNS Server
 
-Fast • Secure • Lightweight • Privacy First
+Powered by <b>Unbound + Smart Race Engine</b>
 
-</div>
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/github/license/YOUR_USERNAME/Smart-DNS-Server?style=for-the-badge">
+
+<img src="https://img.shields.io/github/stars/YOUR_USERNAME/Smart-DNS-Server?style=for-the-badge">
+
+<img src="https://img.shields.io/github/forks/YOUR_USERNAME/Smart-DNS-Server?style=for-the-badge">
+
+<img src="https://img.shields.io/github/issues/YOUR_USERNAME/Smart-DNS-Server?style=for-the-badge">
+
+<img src="https://img.shields.io/github/repo-size/YOUR_USERNAME/Smart-DNS-Server?style=for-the-badge">
+
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Linux-Debian%20%7C%20Armbian-blue?logo=linux">
+
+<img src="https://img.shields.io/badge/Bash-100%25-success?logo=gnubash">
+
+<img src="https://img.shields.io/badge/DNS-Unbound-orange">
+
+<img src="https://img.shields.io/badge/IPv6-Ready-green">
+
+<img src="https://img.shields.io/badge/Privacy-First-red">
+
+</p>
 
 ---
 
-# ✨ Features
+# ✨ Why Smart DNS Server?
 
-- ⚡ Intelligent DNS Race Engine
-- 🚀 Automatic Fastest Resolver Selection
-- 🔒 DNSSEC Validation
-- 🛡 Malware Blocking
-- 🚫 Ads Blocking
-- 🔞 Adult Content Blocking
-- 📱 Social Network Blocking
-- 🎯 Custom Blocklists
-- 📊 Live DNS Monitor
-- 📈 Statistics Dashboard
-- 🔄 Automatic Rearm Timer
-- ⚙️ Interactive Control Panel
-- 🪶 Optimized for Low-RAM Devices
-- 💾 Only Bash + Unbound
-- ❤️ Zero Cloud Dependency
+Unlike traditional DNS forwarders, Smart DNS Server continuously measures multiple upstream DNS providers and automatically chooses the fastest trusted response.
+
+No cloud.
+
+No telemetry.
+
+No heavy software.
+
+Just fast DNS.
 
 ---
 
-# 📸 Screenshots
+# 🎯 Features
 
-> Coming Soon
+## 🚀 Performance
+
+- Smart Race Engine
+- Automatic Fastest Resolver Selection
+- DNS Cache
+- IPv4 & IPv6
+- Ultra Lightweight
+- Optimized for SBCs
 
 ---
 
-# 🖥 Control Panel
+## 🔒 Security
+
+- DNSSEC Validation
+- Malware Blocking
+- Phishing Protection
+- Tracking Protection
+- Privacy First
+- Local Resolution
+
+---
+
+## 🚫 Content Filtering
+
+- Ads
+- Adult
+- Social Networks
+- Malware
+- Custom Lists
+
+Unlimited Blocklists
+
+---
+
+## 🛠 Management
+
+- Interactive Control Panel
+- Block Manager
+- Config Manager
+- Live DNS Monitor
+- Automatic Rearm
+- Systemd Integration
+
+---
+
+# 🖥 Dashboard
 
 ```
 ==================================================
-           Smart DNS Control Panel
+
+          Smart DNS Control Panel
+
 ==================================================
 
 1) Live DNS Monitor
@@ -65,35 +129,95 @@ Fast • Secure • Lightweight • Privacy First
 7) Update
 
 8) Exit
+
+==================================================
 ```
 
 ---
 
-# 📂 Project Structure
+# 📡 Architecture
+
+```text
+
+                Internet
+
+                     │
+
+     ┌───────────────────────────┐
+     │ Upstream DNS Servers      │
+     │                           │
+     │ Cloudflare                │
+     │ Google                    │
+     │ Quad9                     │
+     │ OpenDNS                   │
+     │ AdGuard                   │
+     └─────────────┬─────────────┘
+                   │
+
+          Smart Race Engine
+
+                   │
+
+             Unbound Cache
+
+                   │
+
+          Blocklist Engine
+
+                   │
+
+      Smart DNS Server (Orange Pi)
+
+                   │
+
+        Home Network Clients
+
+```
+
+---
+
+# 📂 Project Layout
 
 ```
 Smart-DNS-Server
-│
+
+├── assets/
+
 ├── blocklists/
+
 │   ├── ADS
+
 │   ├── ADULTS
+
 │   ├── MALWARE
+
 │   ├── SOCIAL
+
 │   └── CUSTOM
+
 │
+
 ├── config/
-│
+
 ├── lib/
-│
-├── scripts/install.d/
-│
+
+├── scripts/
+
 ├── systemd/
+
 │
-├── panel.sh
+
 ├── install.sh
+
 ├── update.sh
+
 ├── uninstall.sh
-└── rearm.sh
+
+├── rearm.sh
+
+├── panel.sh
+
+└── README.md
 ```
 
 ---
@@ -126,37 +250,24 @@ sudo bash uninstall.sh
 
 ---
 
-# 🔧 Rearm DNS
+# ⚡ Rearm
 
 ```bash
 sudo bash rearm.sh
-```
-
-or
-
-```
-Control Panel
-↓
-
-Rearm DNS
 ```
 
 ---
 
 # 📊 Live DNS Monitor
 
-Monitor every DNS query in real-time.
-
-Example
-
 ```
-TIME       CLIENT          TYPE    DOMAIN
+TIME       CLIENT           TYPE   DOMAIN
 
-21:14:07   192.168.1.4     A       google.com
+23:41:10   192.168.1.4      A      google.com
 
-21:14:08   192.168.1.7     AAAA    youtube.com
+23:41:11   192.168.1.7      AAAA   github.com
 
-21:14:09   192.168.1.3     A       github.com
+23:41:12   192.168.1.3      HTTPS  youtube.com
 ```
 
 ---
@@ -165,111 +276,139 @@ TIME       CLIENT          TYPE    DOMAIN
 
 ✔ Ads
 
-✔ Malware
-
 ✔ Adult
+
+✔ Malware
 
 ✔ Social
 
 ✔ Custom
 
-Each category can contain unlimited blocklists.
+Every category supports unlimited TXT files.
 
 ---
 
-# ⚡ Smart Race Engine
+# 💡 Designed For
 
-Instead of forwarding every request to a single DNS server...
+✅ Raspberry Pi
 
-Smart DNS Server races multiple upstream resolvers simultaneously and automatically returns the fastest trusted response.
+✅ Orange Pi
 
-Benefits:
+✅ Thin Clients
 
-- Lower latency
-- Better reliability
-- Automatic failover
-- Better browsing experience
+✅ Mini PCs
 
----
+✅ Home Routers
 
-# 💻 Tested On
+✅ VPS
 
-- Debian 12
-- Armbian
-- Orange Pi One
-- Raspberry Pi
-- Linux x64
+✅ Embedded Linux
 
 ---
 
-# 🎯 Designed For
+# 📈 Performance Goals
 
-- Home Networks
-- Raspberry Pi
-- Orange Pi
-- Thin Clients
-- Mini PCs
-- VPS
-- Embedded Linux Devices
-
----
-
-# ❤️ Philosophy
-
-Smart DNS Server is designed around four principles:
-
-- Privacy First
-- Lightweight
-- Stability
-- Simplicity
-
-No telemetry.
-
-No cloud.
-
-No tracking.
-
-Only DNS.
+| Feature | Smart DNS |
+|---------|-----------|
+| RAM Usage | ⭐ Very Low |
+| CPU Usage | ⭐ Very Low |
+| DNSSEC | ✅ |
+| IPv6 | ✅ |
+| Race Engine | ✅ |
+| Automatic Failover | ✅ |
+| Live Monitor | ✅ |
+| Blocklists | Unlimited |
 
 ---
 
 # 🛣 Roadmap
 
 - [x] Interactive Installer
-- [x] Race Engine
+
 - [x] Live DNS Monitor
+
+- [x] Race Engine
+
 - [x] Block Manager
+
 - [x] Config Manager
-- [x] Automatic Rearm
+
+- [x] Statistics
+
+- [x] Rearm Service
+
 - [ ] DNS-over-TLS
+
 - [ ] DNS-over-HTTPS
+
+- [ ] DNSCrypt
+
 - [ ] REST API
+
 - [ ] Web Dashboard
-- [ ] Multi-language
-- [ ] Docker Support
-- [ ] OpenWRT Support
+
+- [ ] Docker
+
+- [ ] OpenWRT
+
+- [ ] High Availability
 
 ---
 
-# 🤝 Contributions
+# ❤️ Philosophy
 
-Pull requests are welcome.
+Smart DNS Server follows one simple idea:
 
-If you find bugs or have ideas,
-feel free to open an Issue.
+> **Fast DNS should be simple, private and lightweight.**
+
+No databases.
+
+No JavaScript.
+
+No Docker required.
+
+No telemetry.
+
+Only Bash.
+
+Only Unbound.
+
+Only DNS.
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+Open an Issue
+
+Fork the repository
+
+Submit a Pull Request
+
+---
+
+# ⭐ Support
+
+If you like this project,
+
+please consider giving it a ⭐ on GitHub.
+
+It really helps.
 
 ---
 
 # 📜 License
 
-MIT License
+Apache 2 License
 
 ---
 
-<div align="center">
+<p align="center">
 
-Made with ❤️ using Bash & Unbound
+Made with ❤️ using Bash with ChatGPT
 
-⭐ If you like this project, don't forget to Star it!
+Powered by Unbound and Race
 
-</div>
+</p>
