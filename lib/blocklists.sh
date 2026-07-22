@@ -182,13 +182,13 @@ install_blocklists() {
 # Files Path
 ###########################################################
 
-PROJECT_CONFIG_DIR="${BASE_DIR}/config"
+CONFIG_DIR="${BASE_DIR}/config"
 
-GLOBAL_UPSTREAMS="${PROJECT_CONFIG_DIR}/upstreams-global.conf"
-LOCAL_UPSTREAMS="${PROJECT_CONFIG_DIR}/upstreams-local.conf"
+GLOBAL_UPSTREAMS="${CONFIG_DIR}/upstreams-global.conf"
+LOCAL_UPSTREAMS="${CONFIG_DIR}/upstreams-local.conf"
 
-BLOCKLIST_FILE="${PROJECT_CONFIG_DIR}/blocklists.conf"
-DEFAULTS_FILE="${PROJECT_CONFIG_DIR}/defaults.conf"
+BLOCKLIST_FILE="${CONFIG_DIR}/blocklists.conf"
+DEFAULTS_FILE="${CONFIG_DIR}/defaults.conf"
 
 
 ###########################################################
