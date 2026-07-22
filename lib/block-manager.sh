@@ -296,14 +296,8 @@ menu_edit_file() {
             3)
 
                 clear
-
-                if command -v less >/dev/null 2>&1
-                then
-                    less "$file"
-                else
-                    cat "$file"
-                    pause
-                fi
+                
+                view_file
 
                 ;;
 
@@ -364,6 +358,24 @@ menu_edit_file() {
         esac
 
     done
+
+}
+
+view_file() {
+
+    local file="$1"
+
+    clear
+
+    echo "=================================================="
+    echo "File : $(basename "$file")"
+    echo "=================================================="
+    echo
+
+    nl -ba "$file"
+
+    echo
+    pause
 
 }
 
