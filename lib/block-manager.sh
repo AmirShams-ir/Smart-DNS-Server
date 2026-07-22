@@ -92,9 +92,9 @@ menu_block_files() {
 
         for i in "${!files[@]}"
         do
-            printf "%2d) %s\n" \
+            printf "%d) %s\n" \
                 "$((i+1))" \
-                "$(basename "${files[$i]}")"
+                "$(basename "${categories[$i]}")"
         done
 
         echo
