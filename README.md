@@ -22,6 +22,7 @@ Fast • Secure • Lightweight • Privacy First
 - ⚡ Intelligent DNS Race Engine
 - 🚀 Automatic Fastest Resolver Selection
 - 🔒 DNSSEC Validation
+- 🌐 IPv4 And IPv6 Compatible
 - 🛡 Malware Blocking
 - 🚫 Ads Blocking
 - 🔞 Adult Content Blocking
@@ -188,6 +189,7 @@ Benefits:
 - Lower latency
 - Better reliability
 - Automatic failover
+- IPv4 And IPv6 Resolver
 - Better browsing experience
 
 ---
@@ -243,7 +245,6 @@ Only DNS.
 - [ ] DNS-over-HTTPS
 - [ ] REST API
 - [ ] Web Dashboard
-- [ ] Multi-language
 - [ ] Docker Support
 - [ ] OpenWRT Support
 
