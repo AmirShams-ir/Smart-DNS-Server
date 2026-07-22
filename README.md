@@ -37,7 +37,7 @@ Fast • Secure • Lightweight • Privacy First
 
 ---
 
-# 📸 Screenshots
+# 📸 GUI Panel
 
 > Coming Soon
 
