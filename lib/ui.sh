@@ -55,6 +55,10 @@ main_menu() {
 
 5) Statistics
 
+6) Update
+
+7) Uninstall
+
 0) Exit
 
 EOF
@@ -81,6 +85,14 @@ EOF
 
             5)
                 stats_menu
+                ;;
+
+            6)
+                bash update.sh
+                ;;
+
+            7)
+                bash uninstall.sh
                 ;;
 
             0)
