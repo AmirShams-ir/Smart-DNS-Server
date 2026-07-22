@@ -94,7 +94,7 @@ menu_block_files() {
         do
             printf "%d) %s\n" \
                 "$((i+1))" \
-                "$(basename "${categories[$i]}")"
+                "$(basename "${files[$i]}")"
         done
 
         echo
