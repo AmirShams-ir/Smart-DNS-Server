@@ -167,3 +167,19 @@ menu_rearm_interval() {
 
 }
 
+set_config_value() {
+
+    local key="$1"
+    local value="$2"
+
+    sed -Ei \
+        "s|^(${key}=).*|\1\"${value}\"|" \
+        "$CONFIG_DIR/defaults.conf"
+
+}
+
+load_defaults() {
+
+    source "$CONFIG_DIR/defaults.conf"
+
+}
