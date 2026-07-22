@@ -95,11 +95,11 @@ menu_auto_rearm() {
         case "$choice" in
 
             1)
-                set_config_value AUTO_REARM yes
+                systemctl enable --now rearm.timer
                 ;;
 
             2)
-                set_config_value AUTO_REARM no
+                systemctl disable --now rearm.timer
                 ;;
 
             3)

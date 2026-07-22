@@ -1,0 +1,8 @@
+[Unit]
+Description=Smart DNS Rearm
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/Smart-DNS-Server/rearm.sh
