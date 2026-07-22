@@ -180,6 +180,14 @@ set_config_value() {
 
 load_defaults() {
 
-    source "$CONFIG_DIR/defaults.conf"
+    AUTO_REARM=$(
+        grep '^AUTO_REARM=' "$CONFIG_DIR/defaults.conf" |
+        cut -d'"' -f2
+    )
+
+    AUTO_REARM_INTERVAL=$(
+        grep '^AUTO_REARM_INTERVAL=' "$CONFIG_DIR/defaults.conf" |
+        cut -d'"' -f2
+    )
 
 }
