@@ -223,7 +223,8 @@ save_result() {
 benchmark_server() {
 
     local PROVIDER="$1"
-    local SERVER="$2"
+    local LOCATION="$2"
+    local SERVER="$3"
 
     local SUCCESS=0
     local FAIL=0
@@ -301,7 +302,8 @@ benchmark_server() {
 calculate_score() {
 
     local PROVIDER="$1"
-    local SERVER="$2"
+    local LOCATION="$2"
+    local SERVER="$3"
     local AVG="$3"
     local MIN="$4"
     local MAX="$5"
@@ -322,7 +324,7 @@ calculate_score() {
     SCORE=$(( SCORE + JITTER * JITTER_WEIGHT ))
 
     save_result \
-    "$SCORE|$AVG|$MIN|$MAX|$SUCCESS|$FAIL|$JITTER|$PROVIDER|$SERVER"
+    "$SCORE|$AVG|$MIN|$MAX|$SUCCESS|$FAIL|$JITTER|$PROVIDER|$LOCATION|$SERVER"
 
 }
 
@@ -336,13 +338,13 @@ benchmark_all() {
 
     unique_servers |
 
-    while IFS='|' read -r PROVIDER SERVER
+    while IFS='|' read -r PROVIDER LOCATION SERVER
     do
-
         valid_ip "$SERVER" || continue
 
         benchmark_server \
             "$PROVIDER" \
+            "$LOCATION" \
             "$SERVER"
 
     done
