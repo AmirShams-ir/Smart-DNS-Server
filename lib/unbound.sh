@@ -70,8 +70,10 @@ generate_forward() {
     write_forward_header
 
     best_servers |
-
-    while IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER SERVER
+    
+    while IFS='|' read -r \
+        SCORE AVG MIN MAX OK FAIL JITTER \
+        PROVIDER LOCATION SERVER
     do
 
         append_forward "$SERVER"
@@ -123,24 +125,42 @@ reload_unbound_service() {
 
 print_selected() {
 
-printf "\n"
+    echo
+    echo "Selected DNS Servers"
+    printf '%*s\n' 75 '' | tr ' ' '-'
 
-printf "Selected DNS Servers\n"
+    printf "%-3s %-16s %-8s %-18s %6s\n" \
+        "#" \
+        "Provider" \
+        "Type" \
+        "Server" \
+        "Avg"
 
-printf '%s\n' '----------------------------------------'
+    printf '%*s\n' 75 '' | tr ' ' '-'
 
-best_servers |
+    local ID=1
 
-while IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER SERVER
-do
+    best_servers |
 
-    printf "%-18s %4sms\n" \
-        "$SERVER" \
-        "$AVG"
+    while IFS='|' read -r \
+        SCORE AVG MIN MAX OK FAIL JITTER \
+        PROVIDER LOCATION SERVER
+    do
 
-done
+        printf "%-3d %-16s %-8s %-18s %5sms\n" \
+            "$ID" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$SERVER" \
+            "$AVG"
 
-printf "\n"
+        ID=$((ID+1))
+
+    done
+
+    printf '%*s\n' 75 '' | tr ' ' '-'
+
+    echo
 
 }
 
@@ -152,9 +172,7 @@ run_race() {
 
     benchmark_all
 
-    print_header
-
-    sort_results
+    print_results
 
     generate_forward
 

@@ -132,7 +132,7 @@ load_servers() {
 
         [[ -z "$PROVIDER" ]] && continue
         [[ "$PROVIDER" =~ ^# ]] && continue
-        [[ "$TYPE" != "udp" ]] && continue
+        [[ "${TYPE^^}" != "UDP" ]] && continue
 
         if [[ -n "$PRIMARY" ]]
         then
@@ -285,6 +285,7 @@ benchmark_server() {
 
     calculate_score \
         "$PROVIDER" \
+        "$LOCATION" \
         "$SERVER" \
         "$AVG" \
         "$MIN" \
@@ -304,27 +305,23 @@ calculate_score() {
     local PROVIDER="$1"
     local LOCATION="$2"
     local SERVER="$3"
-    local AVG="$3"
-    local MIN="$4"
-    local MAX="$5"
-    local JITTER="$8"
-    local SUCCESS="$6"
-    local FAIL="$7"
 
-    #######################################################
-    # Score Point (Lower is Better)
-    #######################################################
+    local AVG="$4"
+    local MIN="$5"
+    local MAX="$6"
+
+    local SUCCESS="$7"
+    local FAIL="$8"
+    local JITTER="$9"
 
     local SCORE=0
 
-    SCORE=$(( AVG * LATENCY_WEIGHT ))
-
-    SCORE=$(( SCORE + FAIL * FAIL_WEIGHT ))
-
-    SCORE=$(( SCORE + JITTER * JITTER_WEIGHT ))
+    SCORE=$((AVG * LATENCY_WEIGHT))
+    SCORE=$((SCORE + FAIL * FAIL_WEIGHT))
+    SCORE=$((SCORE + JITTER * JITTER_WEIGHT))
 
     save_result \
-    "$SCORE|$AVG|$MIN|$MAX|$SUCCESS|$FAIL|$JITTER|$PROVIDER|$LOCATION|$SERVER"
+"$SCORE|$AVG|$MIN|$MAX|$SUCCESS|$FAIL|$JITTER|$PROVIDER|$LOCATION|$SERVER"
 
 }
 
@@ -378,73 +375,148 @@ best_servers() {
     local GLOBAL_SELECTED=0
     local SELECTED=0
 
-    ####################################################
-    # Read all results only once
-    ####################################################
-
     mapfile -t RESULTS < <(sort_results)
 
-    ####################################################
-    # Phase 1 : Local
-    ####################################################
+    #######################################################
+    # Phase 1 : Select Local DNS
+    #######################################################
 
     for LINE in "${RESULTS[@]}"
     do
-        IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER PROVIDER LOCATION SERVER <<< "$LINE"
+        IFS='|' read -r \
+            SCORE AVG MIN MAX OK FAIL JITTER \
+            PROVIDER LOCATION SERVER <<< "$LINE"
 
         [[ "$LOCATION" != "Local" ]] && continue
-
         [[ -n "${PROVIDERS[$PROVIDER]:-}" ]] && continue
 
         PROVIDERS["$PROVIDER"]=1
 
-        echo "$SCORE|$AVG|$MIN|$MAX|$OK|$FAIL|$JITTER|$SERVER"
+        printf "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n" \
+            "$SCORE" \
+            "$AVG" \
+            "$MIN" \
+            "$MAX" \
+            "$OK" \
+            "$FAIL" \
+            "$JITTER" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$SERVER"
 
-        ((LOCAL_SELECTED++))
-        ((SELECTED++))
+        LOCAL_SELECTED=$((LOCAL_SELECTED+1))
+        SELECTED=$((SELECTED+1))
 
         (( LOCAL_SELECTED >= MIN_LOCAL )) && break
     done
 
-    ####################################################
-    # Phase 2 : Global
-    ####################################################
+    #######################################################
+    # Phase 2 : Select Global DNS
+    #######################################################
 
     for LINE in "${RESULTS[@]}"
     do
-        IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER PROVIDER LOCATION SERVER <<< "$LINE"
+        IFS='|' read -r \
+            SCORE AVG MIN MAX OK FAIL JITTER \
+            PROVIDER LOCATION SERVER <<< "$LINE"
 
         [[ "$LOCATION" != "Global" ]] && continue
-
         [[ -n "${PROVIDERS[$PROVIDER]:-}" ]] && continue
 
         PROVIDERS["$PROVIDER"]=1
 
-        echo "$SCORE|$AVG|$MIN|$MAX|$OK|$FAIL|$JITTER|$SERVER"
+        printf "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n" \
+            "$SCORE" \
+            "$AVG" \
+            "$MIN" \
+            "$MAX" \
+            "$OK" \
+            "$FAIL" \
+            "$JITTER" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$SERVER"
 
-        ((GLOBAL_SELECTED++))
-        ((SELECTED++))
+        GLOBAL_SELECTED=$((GLOBAL_SELECTED+1))
+        SELECTED=$((SELECTED+1))
 
         (( GLOBAL_SELECTED >= MIN_GLOBAL )) && break
     done
 
-    ####################################################
-    # Phase 3 : Fill Remaining
-    ####################################################
+    #######################################################
+    # Phase 3 : Fill Remaining Slots
+    #######################################################
 
     for LINE in "${RESULTS[@]}"
     do
-        IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER PROVIDER LOCATION SERVER <<< "$LINE"
+        IFS='|' read -r \
+            SCORE AVG MIN MAX OK FAIL JITTER \
+            PROVIDER LOCATION SERVER <<< "$LINE"
 
         [[ -n "${PROVIDERS[$PROVIDER]:-}" ]] && continue
 
         PROVIDERS["$PROVIDER"]=1
 
-        echo "$SCORE|$AVG|$MIN|$MAX|$OK|$FAIL|$JITTER|$SERVER"
+        printf "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n" \
+            "$SCORE" \
+            "$AVG" \
+            "$MIN" \
+            "$MAX" \
+            "$OK" \
+            "$FAIL" \
+            "$JITTER" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$SERVER"
 
-        ((SELECTED++))
+        SELECTED=$((SELECTED+1))
 
         (( SELECTED >= TOP_SERVERS )) && break
     done
+
+}
+
+###########################################################
+# Print Benchmark Results
+###########################################################
+
+print_results() {
+
+    printf "\n"
+
+    printf "%-24s %-8s %-18s %6s %6s %6s %6s %7s\n" \
+        "Provider" \
+        "Type" \
+        "Server" \
+        "Avg" \
+        "Min" \
+        "Max" \
+        "Loss" \
+        "Score"
+
+    printf '%*s\n' 90 '' | tr ' ' '-'
+
+    sort_results |
+
+    while IFS='|' read -r \
+        SCORE AVG MIN MAX OK FAIL JITTER \
+        PROVIDER LOCATION SERVER
+    do
+
+        printf "%-24s %-8s %-18s %5sms %5sms %5sms %5d %7d\n" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$SERVER" \
+            "$AVG" \
+            "$MIN" \
+            "$MAX" \
+            "$FAIL" \
+            "$SCORE"
+
+    done
+
+    printf '%*s\n' 90 '' | tr ' ' '-'
+
+    printf "\n"
 
 }
