@@ -11,3 +11,5 @@ install -m644 \
     /etc/systemd/system/
 
 systemctl daemon-reload
+
+chmod +x "$BASE_DIR/rearm.sh"
