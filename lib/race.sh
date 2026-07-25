@@ -30,6 +30,9 @@ set -euo pipefail
 : "${JITTER_WEIGHT:=1}"
 
 readonly TMP_RESULTS="$(mktemp)"
+readonly TMP_PROVIDER="$(mktemp)"
+
+: "${MAX_PER_PROVIDER:=1}"
 
 ###########################################################
 # Cleanup
@@ -37,7 +40,9 @@ readonly TMP_RESULTS="$(mktemp)"
 
 cleanup() {
 
-    rm -f "$TMP_RESULTS"
+    rm -f \
+        "$TMP_RESULTS" \
+        "$TMP_PROVIDER"
 
 }
 
@@ -120,22 +125,31 @@ query_time() {
 
 load_servers() {
 
-        cat "$GLOBAL_UPSTREAMS" "$LOCAL_UPSTREAMS" 2>/dev/null |
-        while IFS='|' read -r NAME TYPE PRIMARY SECONDARY
-        do
+    cat "$GLOBAL_UPSTREAMS" "$LOCAL_UPSTREAMS" 2>/dev/null |
 
-        [[ -z "$NAME" ]] && continue
+    while IFS='|' read -r PROVIDER LOCATION TYPE PRIMARY SECONDARY
+    do
 
-        [[ "$NAME" =~ ^# ]] && continue
-
+        [[ -z "$PROVIDER" ]] && continue
+        [[ "$PROVIDER" =~ ^# ]] && continue
         [[ "$TYPE" != "udp" ]] && continue
 
-        if [[ -n "$PRIMARY" ]]; then
-            valid_ip "$PRIMARY" && echo "$PRIMARY"
+        if [[ -n "$PRIMARY" ]]
+        then
+            valid_ip "$PRIMARY" &&
+            printf "%s|%s|%s\n" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$PRIMARY"
         fi
 
-        if [[ -n "$SECONDARY" ]]; then
-            valid_ip "$SECONDARY" && echo "$SECONDARY"
+        if [[ -n "$SECONDARY" ]]
+        then
+            valid_ip "$SECONDARY" &&
+            printf "%s|%s|%s\n" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$SECONDARY"
         fi
 
     done
@@ -208,7 +222,8 @@ save_result() {
 
 benchmark_server() {
 
-    local SERVER="$1"
+    local PROVIDER="$1"
+    local SERVER="$2"
 
     local SUCCESS=0
     local FAIL=0
@@ -268,6 +283,7 @@ benchmark_server() {
     fi
 
     calculate_score \
+        "$PROVIDER" \
         "$SERVER" \
         "$AVG" \
         "$MIN" \
@@ -284,16 +300,14 @@ benchmark_server() {
 
 calculate_score() {
 
-    local SERVER="$1"
-
-    local AVG="$2"
-    local MIN="$3"
-    local MAX="$4"
-
-    local SUCCESS="$5"
-    local FAIL="$6"
-
-    local JITTER="$7"
+    local PROVIDER="$1"
+    local SERVER="$2"
+    local AVG="$3"
+    local MIN="$4"
+    local MAX="$5"
+    local JITTER="$8"
+    local SUCCESS="$6"
+    local FAIL="$7"
 
     #######################################################
     # Score Point (Lower is Better)
@@ -308,7 +322,7 @@ calculate_score() {
     SCORE=$(( SCORE + JITTER * JITTER_WEIGHT ))
 
     save_result \
-    "$SCORE|$AVG|$MIN|$MAX|$SUCCESS|$FAIL|$JITTER|$SERVER"
+    "$SCORE|$AVG|$MIN|$MAX|$SUCCESS|$FAIL|$JITTER|$PROVIDER|$SERVER"
 
 }
 
@@ -322,12 +336,14 @@ benchmark_all() {
 
     unique_servers |
 
-    while read -r SERVER
+    while IFS='|' read -r PROVIDER SERVER
     do
 
         valid_ip "$SERVER" || continue
 
-        benchmark_server "$SERVER"
+        benchmark_server \
+            "$PROVIDER" \
+            "$SERVER"
 
     done
 
@@ -353,8 +369,80 @@ sort_results() {
 
 best_servers() {
 
-    sort_results |
+    local -a RESULTS=()
+    local -A PROVIDERS=()
 
-    head -n "$TOP_SERVERS"
+    local LOCAL_SELECTED=0
+    local GLOBAL_SELECTED=0
+    local SELECTED=0
+
+    ####################################################
+    # Read all results only once
+    ####################################################
+
+    mapfile -t RESULTS < <(sort_results)
+
+    ####################################################
+    # Phase 1 : Local
+    ####################################################
+
+    for LINE in "${RESULTS[@]}"
+    do
+        IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER PROVIDER LOCATION SERVER <<< "$LINE"
+
+        [[ "$LOCATION" != "Local" ]] && continue
+
+        [[ -n "${PROVIDERS[$PROVIDER]:-}" ]] && continue
+
+        PROVIDERS["$PROVIDER"]=1
+
+        echo "$SCORE|$AVG|$MIN|$MAX|$OK|$FAIL|$JITTER|$SERVER"
+
+        ((LOCAL_SELECTED++))
+        ((SELECTED++))
+
+        (( LOCAL_SELECTED >= MIN_LOCAL )) && break
+    done
+
+    ####################################################
+    # Phase 2 : Global
+    ####################################################
+
+    for LINE in "${RESULTS[@]}"
+    do
+        IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER PROVIDER LOCATION SERVER <<< "$LINE"
+
+        [[ "$LOCATION" != "Global" ]] && continue
+
+        [[ -n "${PROVIDERS[$PROVIDER]:-}" ]] && continue
+
+        PROVIDERS["$PROVIDER"]=1
+
+        echo "$SCORE|$AVG|$MIN|$MAX|$OK|$FAIL|$JITTER|$SERVER"
+
+        ((GLOBAL_SELECTED++))
+        ((SELECTED++))
+
+        (( GLOBAL_SELECTED >= MIN_GLOBAL )) && break
+    done
+
+    ####################################################
+    # Phase 3 : Fill Remaining
+    ####################################################
+
+    for LINE in "${RESULTS[@]}"
+    do
+        IFS='|' read -r SCORE AVG MIN MAX OK FAIL JITTER PROVIDER LOCATION SERVER <<< "$LINE"
+
+        [[ -n "${PROVIDERS[$PROVIDER]:-}" ]] && continue
+
+        PROVIDERS["$PROVIDER"]=1
+
+        echo "$SCORE|$AVG|$MIN|$MAX|$OK|$FAIL|$JITTER|$SERVER"
+
+        ((SELECTED++))
+
+        (( SELECTED >= TOP_SERVERS )) && break
+    done
 
 }
