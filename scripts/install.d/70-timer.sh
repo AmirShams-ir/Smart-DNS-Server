@@ -12,4 +12,4 @@ install -m644 \
 
 systemctl daemon-reload
 
-chmod +x "$BASE_DIR/rearm.sh"
+chmod +x ${BASE_DIR}/rearm.sh
