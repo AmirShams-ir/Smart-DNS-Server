@@ -29,6 +29,10 @@ stats_menu() {
 
     echo
 
+    print_upstream_stats
+
+    echo
+
     pause
 
 }
@@ -175,6 +179,43 @@ print_security_stats() {
     printf "%-20s %s\n" \
         "Rate Limiting" \
         "$(status_text "$RATELIMIT")"
+
+}
+
+print_upstream_stats() {
+
+    echo "Current Upstream Servers"
+
+    printf '%*s\n' 75 '' | tr ' ' '-'
+
+    printf "%-3s %-16s %-8s %-18s %6s\n" \
+        "#" \
+        "Provider" \
+        "Type" \
+        "Server" \
+        "Avg"
+
+    printf '%*s\n' 75 '' | tr ' ' '-'
+
+    local ID=1
+
+    best_servers |
+
+    while IFS='|' read -r \
+        SCORE AVG MIN MAX OK FAIL JITTER \
+        PROVIDER LOCATION SERVER
+    do
+
+        printf "%-3d %-16s %-8s %-18s %5sms\n" \
+            "$ID" \
+            "$PROVIDER" \
+            "$LOCATION" \
+            "$SERVER" \
+            "$AVG"
+
+        ((++ID))
+
+    done
 
 }
 
