@@ -134,15 +134,11 @@ sudo bash install.sh
 sudo bash update.sh
 ```
 
----
-
 # ❌ Uninstall
 
 ```bash
 sudo bash uninstall.sh
 ```
-
----
 
 # 🔧 Rearm DNS
 
@@ -150,13 +146,10 @@ sudo bash uninstall.sh
 sudo bash rearm.sh
 ```
 
-or
+# 💻 CLI Control Panel
 
-```
-Control Panel
-↓
-
-Rearm DNS
+```bash
+sudo bash panel.sh
 ```
 
 ---
