@@ -17,12 +17,29 @@ Fast • Secure • Lightweight • Privacy First
 
 ---
 
+# ⭐ Highlights
+
+- ⚡ Intelligent DNS Race Engine
+- 🔐 DNSSEC + DNS over TLS
+- 🛡 Access Control & Rate Limiting
+- 🚫 Multi-category DNS Blocking
+- 📊 Live DNS Traffic Monitor
+- 📈 Real-time Statistics
+- 🪶 Extremely Lightweight
+- ❤️ Privacy First
+- 🚀 Optimized for Raspberry Pi & Orange Pi
+
+---
+
 # ✨ Features
 
 - ⚡ Intelligent DNS Race Engine
 - 🚀 Automatic Fastest Resolver Selection
 - 🔒 DNSSEC Validation
+- 🔐 DNS over TLS (DoT)
 - 🌐 IPv4 And IPv6 Compatible
+- 🛡 Access Control Lists (ACL)
+- 🚦 DNS Rate Limiting
 - 🛡 Malware Blocking
 - 🚫 Ads Blocking
 - 🔞 Adult Content Blocking
@@ -38,7 +55,7 @@ Fast • Secure • Lightweight • Privacy First
 
 ---
 
-# 📸 GUI Panel
+# 📸 Web-UI Panel
 
 > Coming Soon
 
@@ -194,6 +211,50 @@ Benefits:
 
 ---
 
+---
+
+# 🔒 Security Features
+
+Smart DNS Server includes multiple layers of protection beyond simple DNS forwarding.
+
+### ✅ DNSSEC
+
+Validates DNS responses cryptographically to prevent DNS spoofing and cache poisoning attacks.
+
+---
+
+### 🔐 DNS over TLS (DoT)
+
+Encrypts communication between Smart DNS Server and upstream resolvers, protecting DNS traffic from eavesdropping and manipulation.
+
+---
+
+### 🛡 Access Control Lists (ACL)
+
+Restricts which clients are allowed to use the DNS server.
+
+Perfect for:
+
+- Home Networks
+- Office Networks
+- Guest Isolation
+- Private LANs
+
+---
+
+### 🚦 DNS Rate Limiting
+
+Automatically limits excessive DNS requests from clients to mitigate:
+
+- DNS Flooding
+- Reflection Attacks
+- Misconfigured Devices
+- Malware Generated Queries
+
+while maintaining normal browsing performance.
+
+---
+
 # 💻 Suitable OS
 
 - Debian 12 or 13
@@ -241,9 +302,10 @@ Only DNS.
 - [x] Block Manager
 - [x] Config Manager
 - [x] Automatic Rearm
-- [ ] DNS-over-TLS
-- [ ] DNS-over-HTTPS
-- [ ] REST API
+- [x] DNSSEC
+- [x] DNS-over-TLS (DoT)
+- [x] Access Control (ACL)
+- [x] DNS Rate Limiting
 - [ ] Web Dashboard
 - [ ] Docker Support
 - [ ] OpenWRT Support

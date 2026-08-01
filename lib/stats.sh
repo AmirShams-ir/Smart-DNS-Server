@@ -184,12 +184,12 @@ print_security_stats() {
 
 print_upstream_stats() {
 
-    echo "Current Upstream Servers"
+    info "Current Upstream Servers"
     echo
 
     if [[ ! -f "$FORWARD_CONF" ]]
     then
-        echo "No upstream servers configured."
+        warning "No upstream servers configured."
         return
     fi
 
