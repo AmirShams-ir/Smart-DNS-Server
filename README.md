@@ -74,15 +74,20 @@ Fast • Secure • Lightweight • Privacy First
 
 3) Config Manager
 
-4) Rearm DNS
+4) Security Manager
 
-5) Statistics
+5) Rearm Manager
 
-6) Update
+6) Statistics
 
-7) Uninstall
+7) Install WebUI
 
-8) Exit
+8) Update Script
+
+9) Uninstall Script
+
+0) Exit Script
+
 ```
 
 ---
