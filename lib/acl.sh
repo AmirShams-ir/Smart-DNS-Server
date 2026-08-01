@@ -6,7 +6,7 @@
 #
 ###############################################################################
 
-ACL_CONF="/etc/unbound/unbound.conf.d/acl.conf"
+readonly ACL_CONF="/etc/unbound/unbound.conf.d/acl.conf"
 
 acl_enable() {
 
@@ -32,8 +32,17 @@ EOF
 
     systemctl restart unbound
 
+    if systemctl is-active --quiet unbound
+    then
+        echo
+        echo "Done."
+    else
+        echo
+        echo "Failed."
+    fi
+
     echo
-    echo "ACL Enabled."
+    success "ACL Enabled."
 
     pause
 
@@ -85,6 +94,22 @@ acl_add() {
 
     esac
 
+    grep -qF \
+    "access-control: $NETWORK $ACTION" \
+    "$ACL_CONF"
+
+    if [[ $? -eq 0 ]]
+    then
+
+        echo
+        echo "Rule already exists."
+
+        pause
+
+        return
+
+    fi
+
     echo "    access-control: $NETWORK $ACTION" >> "$ACL_CONF"
 
     if ! unbound-checkconf >/dev/null 2>&1
@@ -103,8 +128,12 @@ acl_add() {
 
     systemctl restart unbound
 
-    echo
-    echo "Rule Added."
+    if systemctl is-active --quiet unbound
+    then
+        success "Rule Added."
+    else
+        fatal "Failed to restart Unbound."
+    fi
 
     pause
 
@@ -119,8 +148,16 @@ acl_remove() {
     echo "=================================================="
     echo
 
-    grep "access-control:" "$ACL_CONF" |
-    nl
+    mapfile -t RULES < <(
+        grep "access-control:" "$ACL_CONF"
+    )
+
+    for i in "${!RULES[@]}"
+    do
+        printf "%2d) %s\n" \
+            "$((i+1))" \
+            "${RULES[$i]}"
+    done
 
     echo
 
@@ -128,18 +165,30 @@ acl_remove() {
 
     [[ -z "$NUM" ]] && return
 
-    sed -i "${NUM}d" "$ACL_CONF"
+    (( NUM >=1 && NUM <= ${#RULES[@]} )) || return
+
+    RULE="${RULES[$((NUM-1))]}"
+
+    sed -i "\|${RULE}|d" "$ACL_CONF"
 
     systemctl restart unbound
 
     echo
-    echo "Rule Removed."
+
+    success "Rule Removed."
 
     pause
 
 }
 
 acl_reset() {
+
+    clear
+
+    echo
+    read -rp "Reset ACL ? [y/N] " ans
+
+    [[ "$ans" =~ ^[Yy]$ ]] || return
 
     rm -f "$ACL_CONF"
 
@@ -249,7 +298,35 @@ acl_detect() {
     systemctl restart unbound
 
     echo
-    echo "$COUNT network(s) added."
+    success "$COUNT network(s) added."
+
+    pause
+
+}
+
+acl_show() {
+
+    clear
+
+    echo "=================================================="
+    echo "                 ACL Rules"
+    echo "=================================================="
+    echo
+
+    if [[ ! -f "$ACL_CONF" ]]
+    then
+
+        echo "ACL Disabled."
+
+        pause
+
+        return
+
+    fi
+
+    grep "access-control:" "$ACL_CONF" | nl
+
+    echo
 
     pause
 

@@ -181,9 +181,11 @@ acl_menu() {
         echo
         echo "4) Remove Network"
         echo
-        echo "5) Show Rules"
+        echo "5) Show Network Rules"
         echo
-        echo "6) Reset Default"
+        echo "6) Detect Local Networks"
+        echo
+        echo "7) Reset Default"
         echo
         echo "0) Back"
         echo
@@ -192,19 +194,21 @@ acl_menu() {
 
         case "$choice" in
 
-            1) acl_enable ;;
+        1) acl_enable ;;
 
-            2) acl_disable ;;
+        2) acl_disable ;;
 
-            3) acl_add ;;
+        3) acl_add ;;
 
-            4) acl_remove ;;
+        4) acl_remove ;;
 
-            5) acl_show ;;
+        5) acl_show ;;
 
-            6) acl_reset ;;
+        6) acl_detect ;;
 
-            0) return ;;
+        7) acl_reset ;;
+
+        0) return ;;
 
         esac
 
