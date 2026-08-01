@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 #
-# Smart DNS Server - Installer Script
+# Smart DNS Server - Update Script
 #
 # https://github.com/AmirShams-ir/Smart-DNS-Server
 #
@@ -46,47 +46,3 @@ source "${BASE_DIR}/lib/rearm-manager.sh"
 source "${BASE_DIR}/lib/security-manager.sh"
 
 trap -p
-
-###############################################################################
-# Main
-###############################################################################
-
-main() {
-
-    banner
-
-    require_root
-
-    require_os
-
-    start_log
-
-    info "Starting installation..."
-
-    shopt -s nullglob
-
-    local scripts=("${INSTALL_DIR}"/*.sh)
-
-    if [[ ${#scripts[@]} -eq 0 ]]; then
-        fatal "No installation modules found."
-    fi
-
-    for script in "$INSTALL_DIR"/*.sh; do
-
-        info "Executing $(basename "$script")"
-
-        if source "$script"; then
-            success "$(basename "$script") completed"
-        else
-            fatal "$(basename "$script") failed (exit code $?)"
-        fi
-
-    done
-
-    success ""
-    success "Installation completed successfully."
-    success ""
-
-}
-
-main "$@"

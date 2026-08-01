@@ -45,21 +45,26 @@ main_menu() {
         show_banner
 
         cat <<EOF
+
 1) Live DNS Monitor
 
 2) Block Manager
 
 3) Config Manager
 
-4) Rearm DNS
+4) Security Manager
 
-5) Statistics
+5) Rearm Manager
 
-6) Update
+6) Statistics
 
-7) Uninstall
+7) Install WebUI
 
-0) Exit
+8) Update Script
+
+9) Uninstall Script
+
+0) Exit Script
 
 EOF
 
@@ -79,22 +84,41 @@ EOF
                 config_menu
                 ;;
 
-            4)
-                rearm_menu
+             4)
+
+                security_menu
+
                 ;;
 
             5)
-                stats_menu
+
+                rearm_menu
+
                 ;;
 
             6)
-                bash update.sh
+
+                stats_menu
+
                 ;;
 
             7)
-                bash uninstall.sh
+
+                bash webui.sh
+
                 ;;
 
+            8)
+
+                bash update.sh
+
+                ;;            
+                
+            9)
+
+                bash uninstall.sh
+
+                ;;
             0)
                 clear
                 exit 0

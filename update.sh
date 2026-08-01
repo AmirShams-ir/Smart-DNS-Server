@@ -43,6 +43,7 @@ source "${BASE_DIR}/lib/dns-monitor.sh"
 source "${BASE_DIR}/lib/block-manager.sh"
 source "${BASE_DIR}/lib/config-manager.sh"
 source "${BASE_DIR}/lib/rearm-manager.sh"
+source "${BASE_DIR}/lib/security-manager.sh"
 
 trap -p
 
