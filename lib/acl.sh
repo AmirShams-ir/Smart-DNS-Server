@@ -229,7 +229,7 @@ acl_detect() {
 
         echo "Added IPv4 : $NETWORK"
 
-        ((COUNT++))
+        ((++COUNT))
 
     done < <(
 
