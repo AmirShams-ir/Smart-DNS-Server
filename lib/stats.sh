@@ -184,30 +184,22 @@ print_security_stats() {
 
 print_upstream_stats() {
 
-    local FORWARD_CONF="/etc/unbound/unbound.conf.d/forward.conf"
-
     echo "Current Upstream Servers"
     echo
 
     if [[ ! -f "$FORWARD_CONF" ]]
     then
-
         echo "No upstream servers configured."
-
         return
-
     fi
 
-    local ID=1
-    local SERVER
-
     printf "%-3s %s\n" "#" "Server"
-
     printf '%*s\n' 30 '' | tr ' ' '-'
+
+    local ID=1
 
     while read -r SERVER
     do
-
         printf "%-3d %s\n" \
             "$ID" \
             "$SERVER"
@@ -215,11 +207,7 @@ print_upstream_stats() {
         ((++ID))
 
     done < <(
-
-        grep "forward-addr:" "$FORWARD_CONF" |
-
-        awk '{print $2}'
-
+        awk '/forward-addr:/ { print $2 }' "$FORWARD_CONF"
     )
 
 }
