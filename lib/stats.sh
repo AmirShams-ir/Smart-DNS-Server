@@ -13,6 +13,10 @@ stats_menu() {
 
     echo
 
+    print_security_stats
+
+    echo
+
     print_cache_stats
 
     echo
@@ -141,6 +145,36 @@ print_system_stats() {
     printf "%-20s %s\n" "Disk" "$DISK"
     printf "%-20s %s\n" "Load" "$LOAD"
     printf "%-20s %s\n" "Uptime" "$UPTIME"
+
+}
+
+print_security_stats() {
+
+    local DNSSEC="disabled"
+    local DOT="disabled"
+    local ACL="disabled"
+    local RATELIMIT="disabled"
+
+    [[ -f /etc/unbound/unbound.conf.d/dnssec.conf ]] && DNSSEC="enabled"
+    [[ -f /etc/unbound/unbound.conf.d/dot.conf ]] && DOT="enabled"
+    [[ -f /etc/unbound/unbound.conf.d/acl.conf ]] && ACL="enabled"
+    [[ -f /etc/unbound/unbound.conf.d/ratelimit.conf ]] && RATELIMIT="enabled"
+
+    printf "%-20s %s\n" \
+        "DNSSEC" \
+        "$(status_text "$DNSSEC")"
+
+    printf "%-20s %s\n" \
+        "DNS over TLS" \
+        "$(status_text "$DOT")"
+
+    printf "%-20s %s\n" \
+        "Access Control" \
+        "$(status_text "$ACL")"
+
+    printf "%-20s %s\n" \
+        "Rate Limiting" \
+        "$(status_text "$RATELIMIT")"
 
 }
 
