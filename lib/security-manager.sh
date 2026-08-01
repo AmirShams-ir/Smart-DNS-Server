@@ -145,7 +145,7 @@ dot_menu() {
 
         case "$choice" in
 
-            1) dot_get_certificate ;;
+            1) certificate_menu ;;
 
             2) dot_enable ;;
 
@@ -255,3 +255,45 @@ ratelimit_menu() {
 
 }
 
+certificate_menu() {
+
+    while true
+    do
+
+        clear
+
+        echo "=================================================="
+        echo "            Certificate Manager"
+        echo "=================================================="
+        echo
+
+        echo "1) Get Certificate"
+        echo
+        echo "2) Renew Certificate"
+        echo
+        echo "3) Certificate Status"
+        echo
+        echo "4) Delete Certificate"
+        echo
+        echo "0) Back"
+        echo
+
+        read -rp "Select: " CHOICE
+
+        case "$CHOICE" in
+
+            1) get_certificate ;;
+
+            2) renew_certificate ;;
+
+            3) certificate_status ;;
+
+            4) delete_certificate ;;
+
+            0) return ;;
+
+        esac
+
+    done
+
+}
