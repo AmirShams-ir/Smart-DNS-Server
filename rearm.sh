@@ -17,17 +17,41 @@ source "${BASE_DIR}/config/blocklists.conf"
 source "${BASE_DIR}/config/defaults.conf"
 
 ###############################################################################
-# Libraries
+# Common Library
 ###############################################################################
 
 source "${BASE_DIR}/lib/common.sh"
+source "${BASE_DIR}/lib/system.sh"
+
+###############################################################################
+# Core Engine
+###############################################################################
+
 source "${BASE_DIR}/lib/dns.sh"
 source "${BASE_DIR}/lib/race.sh"
-source "${BASE_DIR}/lib/system.sh"
 source "${BASE_DIR}/lib/unbound.sh"
 source "${BASE_DIR}/lib/blocklists.sh"
 
+###############################################################################
+# Security
+###############################################################################
+
+source "${BASE_DIR}/lib/certificate.sh"
+source "${BASE_DIR}/lib/dnssec.sh"
+source "${BASE_DIR}/lib/dot.sh"
+source "${BASE_DIR}/lib/acl.sh"
+source "${BASE_DIR}/lib/ratelimit.sh"
+
+###############################################################################
+# User Interface
+###############################################################################
+
 source "${BASE_DIR}/lib/ui.sh"
+
+###############################################################################
+# Managers
+###############################################################################
+
 source "${BASE_DIR}/lib/stats.sh"
 source "${BASE_DIR}/lib/dns-monitor.sh"
 source "${BASE_DIR}/lib/block-manager.sh"
