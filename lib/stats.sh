@@ -45,7 +45,7 @@ print_dns_status() {
 
     DNS_STATUS=$(systemctl is-active unbound 2>/dev/null)
 
-    TIMER_STATUS=$(systemctl is-enabled rearm.timer 2>/dev/null)
+    TIMER_STATUS=$(systemctl is-enabled rearm.timer 2>/dev/null || true)
 
     TIMER_INTERVAL=$(config_get AUTO_REARM_INTERVAL)
 
