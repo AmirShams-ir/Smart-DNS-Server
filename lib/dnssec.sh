@@ -12,7 +12,10 @@ DNSSEC_CONF="/etc/unbound/unbound.conf.d/dnssec.conf"
 # Enable DNSSEC
 ###############################################################################
 
+
 enable_dnssec() {
+
+rm -f /etc/unbound/unbound.conf.d/root-auto-trust-anchor-file.conf
 
     cat > "$DNSSEC_CONF" <<EOF
 server:
@@ -27,10 +30,11 @@ server:
 
 EOF
 
-    if ! unbound-checkconf >/dev/null 2>&1
+    if ! unbound-checkconf
     then
         echo
         echo "Invalid configuration."
+        echo
         pause
         return 1
     fi
