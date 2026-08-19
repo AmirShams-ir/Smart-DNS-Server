@@ -2,14 +2,12 @@
 
 set -euo pipefail
 
-
 info "Detect LAN Network"
 
-LAN_NETWORK="$(
-ip -4 route |
-awk '/proto kernel/ && $1 != "127.0.0.0/8" {print $1; exit}'
-)"
-
+LAN_NETWORK="$({
+    ip -4 route
+    ip -4 route show table main
+} 2>/dev/null | awk '/proto kernel/ && $1 != "127.0.0.0/8" {print $1; exit}')"
 
 : "${LAN_NETWORK:=192.168.1.0/24}"
 
@@ -17,13 +15,18 @@ success "Detected LAN: ${LAN_NETWORK}"
 
 info "Creating Resolver configuration"
 
+qname_min="no"
+case "${QNAME_MINIMISATION:-no}" in
+    yes|true|on|1) qname_min=yes ;;
+esac
+
 cat >/etc/unbound/unbound.conf.d/resolver.conf <<EOF
 server:
 
     interface: 0.0.0.0
     interface: ::0
 
-    port: 53
+    port: ${DNS_PORT}
 
     do-ip4: yes
     do-ip6: yes
@@ -35,7 +38,7 @@ server:
     access-control: ::1 allow
     access-control: ${LAN_NETWORK} allow
 
-    qname-minimisation: yes
+    qname-minimisation: ${qname_min}
 
     root-hints: "/var/lib/unbound/root.hints"
 

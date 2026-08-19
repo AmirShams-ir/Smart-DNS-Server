@@ -1,15 +1,36 @@
+#!/usr/bin/env bash
+
 set -euo pipefail
 
-info "Install systemd-timer"
+info "Installing systemd timers"
 
-install -m644 \
-    "$BASE_DIR/systemd/rearm.service" \
-    /etc/systemd/system/
+install -d -m755 /etc/systemd/system/rearm.timer.d
 
-install -m644 \
-    "$BASE_DIR/systemd/rearm.timer" \
-    /etc/systemd/system/
+# Generate the service with the actual project path instead of a hard-coded path.
+cat > /etc/systemd/system/rearm.service <<EOF
+[Unit]
+Description=Smart DNS Rearm
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash ${BASE_DIR}/rearm.sh
+EOF
+
+install -m644     "$BASE_DIR/systemd/rearm.timer"     /etc/systemd/system/rearm.timer
+
+install -m644     "$BASE_DIR/systemd/rearm-boot.timer"     /etc/systemd/system/rearm-boot.timer
+
+# Synchronize the configured interval with systemd before the timer is enabled.
+apply_rearm_timer
 
 systemctl daemon-reload
 
-chmod +x ${BASE_DIR}/rearm.sh
+if command -v systemd-analyze >/dev/null 2>&1; then
+    systemd-analyze verify         /etc/systemd/system/rearm.service         /etc/systemd/system/rearm.timer         /etc/systemd/system/rearm-boot.timer
+fi
+
+chmod +x "$BASE_DIR/rearm.sh"
+
+success "systemd timers installed (${AUTO_REARM_INTERVAL})."

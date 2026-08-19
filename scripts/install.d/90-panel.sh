@@ -1,17 +1,9 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 info "Installing Smart DNS Panel"
 
-set -Eeuo pipefail
+chmod +x     "$BASE_DIR/panel.sh"     "$BASE_DIR/webui.sh"     "$BASE_DIR/update.sh"     "$BASE_DIR/uninstall.sh"
 
-main() {
-
-    require_root
-
-    check_dependencies
-
-    main_menu
-
-}
-
-main "$@"
+success "Smart DNS Panel installed."

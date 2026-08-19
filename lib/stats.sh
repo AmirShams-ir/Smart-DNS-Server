@@ -42,12 +42,16 @@ print_dns_status() {
     local DNS_STATUS
     local TIMER_STATUS
     local TIMER_INTERVAL
+    local TIMER_NEXT
 
     DNS_STATUS=$(systemctl is-active unbound 2>/dev/null)
 
     TIMER_STATUS=$(systemctl is-enabled rearm.timer 2>/dev/null || true)
 
     TIMER_INTERVAL=$(config_get AUTO_REARM_INTERVAL)
+    TIMER_NEXT=$(systemctl show rearm.timer --property=NextElapseUSecRealtime --value 2>/dev/null || true)
+
+    [[ -z "$TIMER_NEXT" ]] && TIMER_NEXT="n/a"
 
     printf "%-20s %s\n" \
         "DNS Service" \
@@ -58,6 +62,7 @@ print_dns_status() {
         "$(status_text "$TIMER_STATUS")"
         
     printf "%-20s %s\n" "Interval" "$TIMER_INTERVAL"
+    printf "%-20s %s\n" "Next Rearm" "$TIMER_NEXT"
 
 }
 

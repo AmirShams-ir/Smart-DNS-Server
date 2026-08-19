@@ -59,6 +59,18 @@ source "${BASE_DIR}/lib/config-manager.sh"
 source "${BASE_DIR}/lib/rearm-manager.sh"
 source "${BASE_DIR}/lib/security-manager.sh"
 
+###############################################################################
+# Prevent concurrent Rearm runs
+###############################################################################
+
+REARM_LOCK_FILE="/run/smartdns-rearm.lock"
+exec 9>"$REARM_LOCK_FILE"
+
+if ! flock -n 9; then
+    echo "[!] Another Rearm process is already running. Skipping this run."
+    exit 0
+fi
+
 trap -p
 
 ###############################################################################

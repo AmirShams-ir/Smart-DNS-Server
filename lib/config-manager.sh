@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-CONFIG_DIR="$BASE_DIR/config"
-
 config_menu() {
 
     while true; do

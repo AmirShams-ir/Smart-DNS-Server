@@ -1,0 +1,10 @@
+[Unit]
+Description=Initial Smart DNS Rearm After Boot
+
+[Timer]
+OnBootSec=5min
+AccuracySec=1min
+Unit=rearm.service
+
+[Install]
+WantedBy=timers.target

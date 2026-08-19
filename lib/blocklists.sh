@@ -182,8 +182,6 @@ install_blocklists() {
 # Files Path
 ###########################################################
 
-CONFIG_DIR="${BASE_DIR}/config"
-
 GLOBAL_UPSTREAMS="${CONFIG_DIR}/upstreams-global.conf"
 LOCAL_UPSTREAMS="${CONFIG_DIR}/upstreams-local.conf"
 

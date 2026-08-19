@@ -37,6 +37,9 @@ readonly BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 readonly SYSTEM_CONFIG_DIR="/etc/smartdns"
 
+# Project configuration directory.
+readonly CONFIG_DIR="${BASE_DIR}/config"
+
 readonly SCRIPT_DIR="${BASE_DIR}/scripts"
 
 readonly INSTALL_DIR="${SCRIPT_DIR}/install.d"
@@ -192,9 +195,22 @@ run_script() {
 config_get() {
 
     local KEY="$1"
+    local FILE="${CONFIG_DIR}/defaults.conf"
 
-    grep "^${KEY}=" \
-        "$CONFIG_DIR/defaults.conf" |
-        cut -d'"' -f2
+    [[ -f "$FILE" ]] || return 1
+
+    awk -F= -v key="$KEY" '
+        $1 == key {
+            value=$0
+            sub(/^[^=]*=/, "", value)
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", value)
+            if (value ~ /^".*"$/) {
+                sub(/^"/, "", value)
+                sub(/"$/, "", value)
+            }
+            print value
+            exit
+        }
+    ' "$FILE"
 
 }

@@ -5,4 +5,5 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/root/Smart-DNS-Server/rearm.sh
+# The installer writes the final ExecStart path for the actual project location.
+ExecStart=/bin/bash /root/Smart-DNS-Server/rearm.sh

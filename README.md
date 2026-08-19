@@ -145,7 +145,24 @@ sudo bash update.sh
 sudo bash uninstall.sh
 ```
 
-# 🔧 Rearm DNS
+# 🔄 Automatic Rearm
+
+Automatic Rearm is controlled by `config/defaults.conf` and synchronized with systemd.
+Changing the interval from the Rearm Manager updates the real systemd timer, so the displayed value and the actual schedule stay in sync.
+
+Supported intervals:
+
+- `30m`
+- `1h`
+- `2h`
+- `4h`
+- `6h`
+- `12h`
+- `24h`
+
+A separate boot timer performs the initial Rearm approximately 5 minutes after boot. The recurring timer then follows the configured interval.
+
+# 🔧 Manual Rearm
 
 ```bash
 sudo bash rearm.sh

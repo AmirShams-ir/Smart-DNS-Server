@@ -12,121 +12,68 @@
 
 set -Eeuo pipefail
 
-
-###############################################################################
-# Base Directory
-###############################################################################
-
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-###############################################################################
-# Configs
-###############################################################################
 
 source "${BASE_DIR}/config/blocklists.conf"
 source "${BASE_DIR}/config/defaults.conf"
-
-###############################################################################
-# Common Library
-###############################################################################
-
 source "${BASE_DIR}/lib/common.sh"
 source "${BASE_DIR}/lib/system.sh"
-
-###############################################################################
-# Core Engine
-###############################################################################
-
-source "${BASE_DIR}/lib/dns.sh"
-source "${BASE_DIR}/lib/race.sh"
-source "${BASE_DIR}/lib/unbound.sh"
-source "${BASE_DIR}/lib/blocklists.sh"
-
-###############################################################################
-# Security
-###############################################################################
-
-source "${BASE_DIR}/lib/certificate.sh"
-source "${BASE_DIR}/lib/dnssec.sh"
-source "${BASE_DIR}/lib/dot.sh"
-source "${BASE_DIR}/lib/acl.sh"
-source "${BASE_DIR}/lib/ratelimit.sh"
-
-###############################################################################
-# User Interface
-###############################################################################
-
-source "${BASE_DIR}/lib/ui.sh"
-
-###############################################################################
-# Managers
-###############################################################################
-
-source "${BASE_DIR}/lib/stats.sh"
-source "${BASE_DIR}/lib/dns-monitor.sh"
-source "${BASE_DIR}/lib/block-manager.sh"
-source "${BASE_DIR}/lib/config-manager.sh"
-source "${BASE_DIR}/lib/rearm-manager.sh"
-source "${BASE_DIR}/lib/security-manager.sh"
-
-trap -p
-
-###############################################################################
-# Remove Service
-###############################################################################
 
 remove_services() {
 
     info "Removing services..."
 
+    systemctl disable --now rearm.timer 2>/dev/null || true
+    systemctl disable --now rearm-boot.timer 2>/dev/null || true
     systemctl stop unbound 2>/dev/null || true
-
     systemctl disable unbound 2>/dev/null || true
 
 }
 
-###############################################################################
-# Remove Packages
-###############################################################################
+remove_systemd_units() {
+
+    info "Removing systemd units..."
+
+    rm -f         /etc/systemd/system/rearm.service         /etc/systemd/system/rearm.timer         /etc/systemd/system/rearm-boot.timer
+
+    rm -rf /etc/systemd/system/rearm.timer.d
+
+    systemctl daemon-reload
+
+}
 
 remove_packages() {
 
     info "Removing packages..."
 
-    apt remove -y unbound dnsutils
-
-    apt autoremove -y
+    apt-get remove -y unbound dnsutils || true
+    apt-get autoremove -y || true
 
 }
-
-###############################################################################
-# Remove Configuration
-###############################################################################
 
 remove_configuration() {
 
     info "Removing configuration..."
 
     rm -rf /etc/smartdns
-
     rm -rf /var/log/smartdns
+    rm -f /run/smartdns-rearm.lock
 
 }
 
-###############################################################################
-# Remove Timer
-###############################################################################
+remove_resolv_conf_override() {
 
-    systemctl disable --now rearm.timer
+    info "Restoring /etc/resolv.conf..."
 
-    rm -f /etc/systemd/system/rearm.service
-    rm -f /etc/systemd/system/rearm.timer
+    # Do not delete a resolver configuration that was not created by us.
+    if [[ -f /etc/resolv.conf ]] && grep -qE '^nameserver[[:space:]]+127\.0\.0\.1$' /etc/resolv.conf; then
+        rm -f /etc/resolv.conf
+        if command -v systemctl >/dev/null 2>&1 && systemctl list-unit-files systemd-resolved.service >/dev/null 2>&1; then
+            systemctl enable --now systemd-resolved 2>/dev/null || true
+        fi
+    fi
 
-    systemctl daemon-reload
-
-###############################################################################
-# Finish
-###############################################################################
+}
 
 finish() {
 
@@ -134,26 +81,18 @@ finish() {
 
 }
 
-###############################################################################
-# Main
-###############################################################################
-
 main() {
 
     banner
-
     require_root
-
     require_os
-
     start_log
 
     remove_services
-
-    remove_packages
-
+    remove_systemd_units
     remove_configuration
-
+    remove_resolv_conf_override
+    remove_packages
     finish
 
 }
