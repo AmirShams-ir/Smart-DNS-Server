@@ -1,10 +1,16 @@
 [Unit]
 Description=Automatic Smart DNS Rearm
+After=network-online.target
+Wants=network-online.target
 
 [Timer]
-# The interval is managed by /etc/systemd/system/rearm.timer.d/interval.conf
-# and synchronized with config/defaults.conf by the Rearm Manager.
+# First automatic Rearm after boot.
+OnBootSec=5min
+
+# Periodic Rearm interval.
+# This value is synchronized from config/defaults.conf.
 OnUnitActiveSec=1h
+
 AccuracySec=1min
 Unit=rearm.service
 

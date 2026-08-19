@@ -1,13 +1,28 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -Eeuo pipefail
 
-info "Installing systemd timers"
+###############################################################################
+# Smart DNS Server - systemd Rearm Timer Installation
+###############################################################################
 
-install -d -m755 /etc/systemd/system/rearm.timer.d
+info "Installing systemd Rearm timer"
 
-# Generate the service with the actual project path instead of a hard-coded path.
-cat > /etc/systemd/system/rearm.service <<EOF
+validate_rearm_interval "$AUTO_REARM_INTERVAL" || \
+    fatal "Invalid AUTO_REARM_INTERVAL: ${AUTO_REARM_INTERVAL}"
+
+###############################################################################
+# Remove legacy second timer and old drop-ins
+###############################################################################
+
+rm -f /etc/systemd/system/rearm-boot.timer
+rm -rf /etc/systemd/system/rearm.timer.d
+
+###############################################################################
+# Rearm Service
+###############################################################################
+
+cat > /etc/systemd/system/rearm.service <<EOF_SERVICE
 [Unit]
 Description=Smart DNS Rearm
 After=network-online.target
@@ -16,21 +31,48 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/bin/bash ${BASE_DIR}/rearm.sh
-EOF
+EOF_SERVICE
 
-install -m644     "$BASE_DIR/systemd/rearm.timer"     /etc/systemd/system/rearm.timer
+###############################################################################
+# Single Rearm Timer
+###############################################################################
 
-install -m644     "$BASE_DIR/systemd/rearm-boot.timer"     /etc/systemd/system/rearm-boot.timer
+cat > /etc/systemd/system/rearm.timer <<EOF_TIMER
+[Unit]
+Description=Automatic Smart DNS Rearm
+After=network-online.target
+Wants=network-online.target
 
-# Synchronize the configured interval with systemd before the timer is enabled.
-apply_rearm_timer
+[Timer]
+# First automatic Rearm after boot.
+OnBootSec=5min
+
+# Periodic Rearm interval.
+OnUnitActiveSec=${AUTO_REARM_INTERVAL}
+
+AccuracySec=1min
+Unit=rearm.service
+
+[Install]
+WantedBy=timers.target
+EOF_TIMER
+
+###############################################################################
+# Reload systemd
+###############################################################################
 
 systemctl daemon-reload
 
+###############################################################################
+# Validate Units
+###############################################################################
+
 if command -v systemd-analyze >/dev/null 2>&1; then
-    systemd-analyze verify         /etc/systemd/system/rearm.service         /etc/systemd/system/rearm.timer         /etc/systemd/system/rearm-boot.timer
+    systemd-analyze verify \
+        /etc/systemd/system/rearm.service \
+        /etc/systemd/system/rearm.timer
 fi
 
 chmod +x "$BASE_DIR/rearm.sh"
 
-success "systemd timers installed (${AUTO_REARM_INTERVAL})."
+success "systemd Rearm timer installed (${AUTO_REARM_INTERVAL})."

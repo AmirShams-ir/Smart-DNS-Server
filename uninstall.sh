@@ -34,7 +34,10 @@ remove_systemd_units() {
 
     info "Removing systemd units..."
 
-    rm -f         /etc/systemd/system/rearm.service         /etc/systemd/system/rearm.timer         /etc/systemd/system/rearm-boot.timer
+    rm -f \
+        /etc/systemd/system/rearm.service \
+        /etc/systemd/system/rearm.timer \
+        /etc/systemd/system/rearm-boot.timer
 
     rm -rf /etc/systemd/system/rearm.timer.d
 

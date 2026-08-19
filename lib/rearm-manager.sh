@@ -3,14 +3,11 @@
 #
 # Smart DNS Server - Rearm Manager
 #
-# Keeps the user configuration and systemd timers synchronized.
+# Keeps the user configuration and the single systemd Rearm timer synchronized.
 #
-# ==============================================================================
+# ===============================================================================
 
 REARM_TIMER_UNIT="/etc/systemd/system/rearm.timer"
-REARM_BOOT_TIMER_UNIT="/etc/systemd/system/rearm-boot.timer"
-REARM_TIMER_DROPIN_DIR="/etc/systemd/system/rearm.timer.d"
-REARM_TIMER_DROPIN="${REARM_TIMER_DROPIN_DIR}/interval.conf"
 
 ###############################################################################
 # Validate Rearm Interval
@@ -42,6 +39,36 @@ validate_rearm_interval() {
 }
 
 ###############################################################################
+# Write Rearm Timer
+###############################################################################
+
+write_rearm_timer() {
+
+    local interval="$1"
+
+    cat > "$REARM_TIMER_UNIT" <<EOF_TIMER
+[Unit]
+Description=Automatic Smart DNS Rearm
+After=network-online.target
+Wants=network-online.target
+
+[Timer]
+# First automatic Rearm after boot.
+OnBootSec=5min
+
+# Periodic Rearm interval.
+OnUnitActiveSec=${interval}
+
+AccuracySec=1min
+Unit=rearm.service
+
+[Install]
+WantedBy=timers.target
+EOF_TIMER
+
+}
+
+###############################################################################
 # Apply Rearm Interval To systemd
 ###############################################################################
 
@@ -49,36 +76,38 @@ apply_rearm_timer() {
 
     load_defaults
 
-    if [[ ! -f "$REARM_TIMER_UNIT" ]]; then
-        warning "rearm.timer is not installed yet."
-        return 0
-    fi
-
     validate_rearm_interval "$AUTO_REARM_INTERVAL" || {
         warning "Invalid AUTO_REARM_INTERVAL: $AUTO_REARM_INTERVAL"
         return 1
     }
 
-    mkdir -p "$REARM_TIMER_DROPIN_DIR"
+    if [[ ! -f "$REARM_TIMER_UNIT" ]]; then
+        warning "rearm.timer is not installed yet."
+        return 0
+    fi
 
-    cat > "$REARM_TIMER_DROPIN" <<EOF
-[Timer]
-# Managed automatically. Do not edit manually.
-OnUnitActiveSec=
-OnUnitActiveSec=${AUTO_REARM_INTERVAL}
-EOF
+    info "Applying Rearm interval: ${AUTO_REARM_INTERVAL}"
+
+    write_rearm_timer "$AUTO_REARM_INTERVAL"
 
     systemctl daemon-reload
 
     if [[ "$AUTO_REARM" == "yes" ]]; then
-        # Do not start a timer during installation if it is not active yet.
-        # The finish step enables it after Unbound is ready.
+
+        systemctl enable rearm.timer >/dev/null 2>&1 || true
+
+        # If the timer is already active, restart it so the new interval is
+        # loaded immediately. If it is inactive, start it normally.
         if systemctl is-active --quiet rearm.timer 2>/dev/null; then
             systemctl restart rearm.timer
+        else
+            systemctl start rearm.timer
         fi
+
     else
-        systemctl stop rearm.timer 2>/dev/null || true
-        systemctl disable rearm.timer 2>/dev/null || true
+
+        systemctl disable --now rearm.timer 2>/dev/null || true
+
     fi
 
     return 0
@@ -95,12 +124,6 @@ enable_auto_rearm() {
 
     apply_rearm_timer || return 1
 
-    if [[ -f "$REARM_BOOT_TIMER_UNIT" ]]; then
-        systemctl enable --now rearm-boot.timer
-    fi
-
-    systemctl enable --now rearm.timer
-
     success "Automatic Rearm enabled (${AUTO_REARM_INTERVAL})."
 
 }
@@ -115,7 +138,6 @@ disable_auto_rearm() {
     load_defaults
 
     systemctl disable --now rearm.timer 2>/dev/null || true
-    systemctl disable --now rearm-boot.timer 2>/dev/null || true
 
     success "Automatic Rearm disabled."
 
@@ -269,6 +291,12 @@ menu_rearm_interval() {
         *) return 0 ;;
     esac
 
+    if ! validate_rearm_interval "$interval"; then
+        warning "Invalid Rearm interval: $interval"
+        read -rp "Press Enter..."
+        return 1
+    fi
+
     set_config_value AUTO_REARM_INTERVAL "$interval"
 
     if ! apply_rearm_timer; then
@@ -297,15 +325,14 @@ set_config_value() {
 
     [[ -f "$file" ]] || fatal "Configuration file not found: $file"
 
-    escaped_value="${value//\/\\}"
-    escaped_value="${escaped_value//&/\&}"
-    escaped_value="${escaped_value//|/\|}"
+    escaped_value="${value//\\/\\\\}"
+    escaped_value="${escaped_value//&/\\&}"
+    escaped_value="${escaped_value//|/\\|}"
 
     if grep -qE "^${key}=" "$file"; then
-        sed -Ei "s|^(${key}=).*|\1"${escaped_value}"|" "$file"
+        sed -Ei "s|^(${key}=).*|\1\"${escaped_value}\"|" "$file"
     else
-        printf '%s="%s"
-' "$key" "$value" >> "$file"
+        printf '%s="%s"\n' "$key" "$value" >> "$file"
     fi
 
 }

@@ -59,12 +59,11 @@ load_defaults
 apply_rearm_timer
 
 if [[ "$AUTO_REARM" == "yes" ]]; then
-    systemctl enable --now rearm.timer
-    systemctl enable --now rearm-boot.timer
+    systemctl enable rearm.timer >/dev/null 2>&1 || true
+    systemctl start rearm.timer
     success "Automatic Rearm enabled (${AUTO_REARM_INTERVAL})."
 else
     systemctl disable --now rearm.timer 2>/dev/null || true
-    systemctl disable --now rearm-boot.timer 2>/dev/null || true
     success "Automatic Rearm disabled."
 fi
 
