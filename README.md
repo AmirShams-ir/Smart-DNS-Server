@@ -344,8 +344,12 @@ Apache 2.0 License
 
 <div align="center">
 
-Made with ❤️ by Codex using Bash & Unbound & Smart Race Engine.
+### Designed for Orange Pi, Raspberry Pi and Every Debian Server
 
-⭐ If you like this project, don't forget to Star it!
+Made with ❤️ by **AmirShams-ir**
+
+**Smart Gateway • Smart DNS • Smart Proxy**
+
+⭐ Don't forget to Star this project!
 
 </div>
