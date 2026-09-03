@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 #
-# Smart DNS Server - Capture Script
+# Smart DNS Server - Live DNS Monitor
 #
 # https://github.com/AmirShams-ir/Smart-DNS-Server
 #
@@ -13,9 +13,9 @@
 CAPTURE_ENGINE=""
 CLIENT_IP=""
 
-###########################################################
+###############################################################################
 # Live DNS Monitor
-###########################################################
+###############################################################################
 
 monitor_menu() {
 
@@ -37,9 +37,9 @@ monitor_menu() {
 
 }
 
-###########################################################
+###############################################################################
 # Detect Capture Engine
-###########################################################
+###############################################################################
 
 detect_capture_engine() {
 
@@ -55,9 +55,9 @@ detect_capture_engine() {
 
 }
 
-###########################################################
+###############################################################################
 # Choose Client
-###########################################################
+###############################################################################
 
 choose_client() {
 
@@ -68,9 +68,9 @@ choose_client() {
     echo
 
     mapfile -t CLIENTS < <(
-        ip neigh \
-        | awk '$1 ~ /^[0-9]/ {print $1}' \
-        | sort -u
+        ip neigh |
+        awk '$1 ~ /^[0-9]/ {print $1}' |
+        sort -u
     )
 
     if ((${#CLIENTS[@]} == 0)); then
@@ -82,36 +82,32 @@ choose_client() {
     PS3="Select Client: "
 
     select CLIENT_IP in "${CLIENTS[@]}" "Back"; do
-
         case "$CLIENT_IP" in
-
             Back)
                 return 1
                 ;;
-
             "")
                 echo "Invalid selection."
                 ;;
-
             *)
                 return 0
                 ;;
-
         esac
-
     done
 
 }
 
-###########################################################
+###############################################################################
 # Start Capture
-###########################################################
+###############################################################################
 
 start_capture() {
 
     local CLIENT="$1"
+    local line
     local domain
-    local last=""
+    local address
+    local last_domain=""
 
     tshark \
         -q \
@@ -126,14 +122,18 @@ start_capture() {
         -e dns.qry.name \
         -e dns.a \
         -e dns.aaaa |
-    while IFS= read -r domain
+    while IFS=$'\t' read -r domain address
     do
         [[ -z "$domain" ]] && continue
-        [[ "$domain" == "$last" ]] && continue
+        [[ "$domain" == "$last_domain" ]] && continue
 
-        last="$domain"
+        last_domain="$domain"
 
-        printf '%(%H:%M:%S)T   %s\n' -1 "$domain"
+        if [[ -n "$address" ]]; then
+            printf '%(%H:%M:%S)T   %-45s %s\n' -1 "$domain" "$address"
+        else
+            printf '%(%H:%M:%S)T   %s\n' -1 "$domain"
+        fi
     done
 
 }
