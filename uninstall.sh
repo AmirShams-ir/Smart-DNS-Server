@@ -24,6 +24,7 @@ remove_services() {
     info "Removing services..."
 
     systemctl disable --now rearm.timer 2>/dev/null || true
+    # Remove any timer left by older releases.
     systemctl disable --now rearm-boot.timer 2>/dev/null || true
     systemctl stop unbound 2>/dev/null || true
     systemctl disable unbound 2>/dev/null || true
