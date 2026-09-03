@@ -58,7 +58,6 @@ info "Configuring Automatic Rearm"
 load_defaults
 apply_rearm_timer
 
-# apply_rearm_timer is the single source of truth for the timer state.
 if [[ "$AUTO_REARM" == "yes" ]]; then
     success "Automatic Rearm enabled (${AUTO_REARM_INTERVAL})."
 else
