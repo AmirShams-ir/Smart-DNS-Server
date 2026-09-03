@@ -53,12 +53,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Timer]
-# First automatic Rearm after boot.
-OnBootSec=5min
-
-# Periodic Rearm interval.
 OnUnitActiveSec=${interval}
-
 AccuracySec=1min
 Unit=rearm.service
 
