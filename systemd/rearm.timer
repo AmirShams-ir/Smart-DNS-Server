@@ -4,13 +4,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Timer]
-# First automatic Rearm after boot.
-OnBootSec=5min
-
-# Default periodic Rearm interval.
-# The installer and Rearm Manager synchronize this from config/defaults.conf.
 OnUnitActiveSec=1h
-
 AccuracySec=1min
 Unit=rearm.service
 

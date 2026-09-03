@@ -22,7 +22,7 @@ rm -rf /etc/systemd/system/rearm.timer.d
 # Rearm Service
 ###############################################################################
 
-sed "s|__BASE_DIR__|${BASE_DIR}|g" \
+sed 
     "$BASE_DIR/systemd/rearm.service" \
     > /etc/systemd/system/rearm.service
 

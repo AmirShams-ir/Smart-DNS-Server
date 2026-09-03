@@ -1,9 +1,9 @@
 [Unit]
 Description=Smart DNS Rearm
-After=network-online.target
+After=network-online.target unbound.service
 Wants=network-online.target
+Requires=unbound.service
 
 [Service]
 Type=oneshot
-# __BASE_DIR__ is replaced by the installer with the actual project path.
-ExecStart=/bin/bash __BASE_DIR__/rearm.sh
+ExecStart=/etc/systemd/system/rearm.service
