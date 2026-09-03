@@ -22,16 +22,9 @@ rm -rf /etc/systemd/system/rearm.timer.d
 # Rearm Service
 ###############################################################################
 
-cat > /etc/systemd/system/rearm.service <<EOF_SERVICE
-[Unit]
-Description=Smart DNS Rearm
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=oneshot
-ExecStart=/bin/bash ${BASE_DIR}/rearm.sh
-EOF_SERVICE
+sed "s|__BASE_DIR__|${BASE_DIR}|g" \
+    "$BASE_DIR/systemd/rearm.service" \
+    > /etc/systemd/system/rearm.service
 
 ###############################################################################
 # Single Rearm Timer
@@ -70,9 +63,21 @@ systemctl daemon-reload
 if command -v systemd-analyze >/dev/null 2>&1; then
     systemd-analyze verify \
         /etc/systemd/system/rearm.service \
-        /etc/systemd/system/rearm.timer
+        /etc/systemd/system/rearm.timer || \
+        fatal "systemd unit validation failed."
 fi
 
 chmod +x "$BASE_DIR/rearm.sh"
 
-success "systemd Rearm timer installed (${AUTO_REARM_INTERVAL})."
+###############################################################################
+# Apply Current Automatic Rearm State
+###############################################################################
+
+if [[ "$AUTO_REARM" == "yes" ]]; then
+    systemctl enable rearm.timer >/dev/null 2>&1
+    systemctl restart rearm.timer
+    success "Automatic Rearm enabled (${AUTO_REARM_INTERVAL})."
+else
+    systemctl disable --now rearm.timer 2>/dev/null || true
+    success "Automatic Rearm disabled."
+fi
