@@ -6,4 +6,4 @@ Requires=unbound.service
 
 [Service]
 Type=oneshot
-ExecStart=/etc/systemd/system/rearm.service
+ExecStart=/bin/bash __BASE_DIR__/rearm.sh
