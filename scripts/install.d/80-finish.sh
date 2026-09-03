@@ -18,19 +18,19 @@ if [[ -L /etc/resolv.conf ]]; then
 fi
 
 if [[ ! -e /etc/resolv.conf ]]; then
-    if ! cat >/etc/resolv.conf <<EOF
+    if ! cat >/etc/resolv.conf <<EOF_RESOLV
 nameserver 127.0.0.1
 options edns0 trust-ad
-EOF
+EOF_RESOLV
     then
         fatal "Cannot create /etc/resolv.conf. Check: lsattr /etc/resolv.conf"
     fi
 elif [[ -f /etc/resolv.conf ]]; then
     if ! grep -qE '^nameserver[[:space:]]+127\.0\.0\.1$' /etc/resolv.conf; then
-        if ! cat >/etc/resolv.conf <<EOF
+        if ! cat >/etc/resolv.conf <<EOF_RESOLV
 nameserver 127.0.0.1
 options edns0 trust-ad
-EOF
+EOF_RESOLV
         then
             fatal "Cannot update /etc/resolv.conf. Check: lsattr /etc/resolv.conf"
         fi
@@ -58,12 +58,10 @@ info "Configuring Automatic Rearm"
 load_defaults
 apply_rearm_timer
 
+# apply_rearm_timer is the single source of truth for the timer state.
 if [[ "$AUTO_REARM" == "yes" ]]; then
-    systemctl enable rearm.timer >/dev/null 2>&1 || true
-    systemctl start rearm.timer
     success "Automatic Rearm enabled (${AUTO_REARM_INTERVAL})."
 else
-    systemctl disable --now rearm.timer 2>/dev/null || true
     success "Automatic Rearm disabled."
 fi
 
@@ -79,7 +77,10 @@ fi
 DEFAULT_IFACE=$(ip route | awk '/default/ {print $5; exit}')
 
 DNS_IPV4=$(
-    ip -4 addr show "$DEFAULT_IFACE"     | awk '/inet /{print $2}'     | cut -d/ -f1     | head -n1
+    ip -4 addr show "$DEFAULT_IFACE" |
+    awk '/inet /{print $2}' |
+    cut -d/ -f1 |
+    head -n1
 )
 
 DNS_IPV6=$(
