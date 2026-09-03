@@ -93,21 +93,15 @@ apply_rearm_timer() {
     systemctl daemon-reload
 
     if [[ "$AUTO_REARM" == "yes" ]]; then
-
         systemctl enable rearm.timer >/dev/null 2>&1 || true
 
-        # If the timer is already active, restart it so the new interval is
-        # loaded immediately. If it is inactive, start it normally.
         if systemctl is-active --quiet rearm.timer 2>/dev/null; then
             systemctl restart rearm.timer
         else
             systemctl start rearm.timer
         fi
-
     else
-
         systemctl disable --now rearm.timer 2>/dev/null || true
-
     fi
 
     return 0
@@ -170,9 +164,7 @@ manual_rearm() {
 rearm_menu() {
 
     while true; do
-
         load_defaults
-
         clear
 
         echo "=================================================="
@@ -197,7 +189,6 @@ rearm_menu() {
                 sleep 1
                 ;;
         esac
-
     done
 
 }
@@ -209,9 +200,7 @@ rearm_menu() {
 menu_auto_rearm() {
 
     while true; do
-
         load_defaults
-
         clear
 
         echo "=================================================="
@@ -245,7 +234,6 @@ menu_auto_rearm() {
                 sleep 1
                 ;;
         esac
-
     done
 
 }
