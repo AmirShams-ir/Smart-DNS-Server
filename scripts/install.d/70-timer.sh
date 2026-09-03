@@ -19,15 +19,15 @@ rm -f /etc/systemd/system/rearm-boot.timer
 rm -rf /etc/systemd/system/rearm.timer.d
 
 ###############################################################################
-# Rearm Service
+# Install Rearm Service
 ###############################################################################
 
-sed 
+sed "s|__BASE_DIR__|${BASE_DIR}|g" \
     "$BASE_DIR/systemd/rearm.service" \
     > /etc/systemd/system/rearm.service
 
 ###############################################################################
-# Single Rearm Timer
+# Install Single Periodic Rearm Timer
 ###############################################################################
 
 cat > /etc/systemd/system/rearm.timer <<EOF_TIMER
@@ -37,12 +37,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Timer]
-# First automatic Rearm after boot.
-OnBootSec=5min
-
-# Periodic Rearm interval.
 OnUnitActiveSec=${AUTO_REARM_INTERVAL}
-
 AccuracySec=1min
 Unit=rearm.service
 
@@ -75,7 +70,7 @@ chmod +x "$BASE_DIR/rearm.sh"
 
 if [[ "$AUTO_REARM" == "yes" ]]; then
     systemctl enable rearm.timer >/dev/null 2>&1
-    systemctl restart rearm.timer
+    systemctl start rearm.timer
     success "Automatic Rearm enabled (${AUTO_REARM_INTERVAL})."
 else
     systemctl disable --now rearm.timer 2>/dev/null || true
