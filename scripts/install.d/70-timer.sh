@@ -37,8 +37,10 @@ After=network-online.target
 Wants=network-online.target
 
 [Timer]
+OnBootSec=${AUTO_REARM_INTERVAL}
 OnUnitActiveSec=${AUTO_REARM_INTERVAL}
 AccuracySec=1min
+Persistent=true
 Unit=rearm.service
 
 [Install]
