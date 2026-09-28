@@ -4,8 +4,10 @@ After=network-online.target
 Wants=network-online.target
 
 [Timer]
-OnBootSec=${AUTO_REARM_INTERVAL}
-OnUnitActiveSec=${AUTO_REARM_INTERVAL}
+# This file is a template. The installer generates the runtime unit
+# using AUTO_REARM_INTERVAL from config/defaults.conf.
+OnBootSec=1h
+OnUnitActiveSec=1h
 AccuracySec=1min
 Persistent=true
 Unit=rearm.service
