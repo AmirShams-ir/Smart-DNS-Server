@@ -2,6 +2,7 @@
 ## [Unreleased] - Rearm & Reliability Fixes
 
 - Fixed Automatic Rearm interval mismatch between the control panel and systemd.
+- Added `OnBootSec` and `Persistent=true` so the timer gets a valid first trigger and can catch up after downtime.
 - Added a systemd drop-in for the configured recurring Rearm interval.
 - Added a dedicated boot timer for the initial Rearm without resetting the recurring interval.
 - Synchronized Enable/Disable state with `AUTO_REARM`.
